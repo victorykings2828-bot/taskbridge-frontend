@@ -1,0 +1,133 @@
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import api from '../utils/api';
+import StatCard from '../components/common/StatCard';
+import { CardSkeleton, TableSkeleton } from '../components/common/Skeleton';
+import { PriorityBadge, StatusBadge } from '../components/common/Badge';
+import { formatDate, getInitials, generateAvatarColor } from '../utils/helpers';
+
+const getGreeting = () => {
+  const h = new Date().getHours();
+  if (h < 12) return 'morning';
+  if (h < 18) return 'afternoon';
+  return 'evening';
+};
+
+const ManagerDashboard = () => {
+  const { user } = useAuth();
+  const [stats, setStats] = useState(null);
+  const [recentTasks, setRecentTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [statsRes, tasksRes] = await Promise.all([
+          api.get('/users/stats'),
+          api.get('/tasks?limit=6'),
+        ]);
+        setStats(statsRes.data.stats);
+        setRecentTasks(tasksRes.data.tasks || []);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  return (
+    <div className="animate-fade-in">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">
+            Good {getGreeting()}, {user?.name?.split(' ')[0]} 👋
+          </h1>
+          <p className="text-gray-500 mt-1">Here's what's happening with your team</p>
+        </div>
+        <Link
+          to="/tasks/create"
+          className="inline-flex items-center gap-2 bg-primary hover:bg-primary-light text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-all shadow-md hover:shadow-lg"
+        >
+          <span className="text-lg leading-none">+</span> Assign Task
+        </Link>
+      </div>
+
+      {/* Stats grid */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        {loading ? (
+          [1, 2, 3, 4].map((i) => <CardSkeleton key={i} />)
+        ) : (
+          <>
+            <StatCard label="Total Tasks"     value={stats?.totalTasks}     icon="📋" colorClass="text-gray-700"   bgClass="bg-gray-100" />
+            <StatCard label="Completed"       value={stats?.completedTasks} icon="✅" colorClass="text-green-700"  bgClass="bg-green-50" />
+            <StatCard label="Pending"         value={stats?.pendingTasks}   icon="⏳" colorClass="text-blue-700"   bgClass="bg-blue-50" />
+            <StatCard label="Overdue"         value={stats?.overdueTasks}   icon="🚨" colorClass="text-red-700"    bgClass="bg-red-50" />
+          </>
+        )}
+      </div>
+
+      {/* Secondary stats row */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+        {loading ? (
+          [1, 2].map((i) => <CardSkeleton key={i} />)
+        ) : (
+          <>
+            <StatCard label="Team Members"    value={stats?.totalEmployees}   icon="👥" colorClass="text-purple-700" bgClass="bg-purple-50" />
+            <StatCard label="Under Review"    value={stats?.underReviewTasks} icon="🔍" colorClass="text-amber-700"  bgClass="bg-amber-50" />
+          </>
+        )}
+      </div>
+
+      {/* Recent Tasks */}
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="text-lg font-semibold text-gray-900">Recent Tasks</h2>
+          <Link to="/tasks" className="text-sm text-blue-600 hover:text-blue-700 font-medium">View all →</Link>
+        </div>
+
+        {loading ? (
+          <TableSkeleton rows={5} />
+        ) : recentTasks.length === 0 ? (
+          <div className="text-center py-12">
+            <div className="text-4xl mb-3">📋</div>
+            <p className="text-gray-500 text-sm">No tasks yet</p>
+            <Link to="/tasks/create" className="mt-3 inline-block text-sm text-blue-600 font-medium hover:underline">
+              Assign your first task →
+            </Link>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {recentTasks.map((task) => {
+              const assignee = task.assignedTo;
+              const color = generateAvatarColor(assignee?.name || '');
+              const initials = getInitials(assignee?.name || '');
+              return (
+                <Link
+                  key={task._id}
+                  to={`/tasks/${task._id}`}
+                  className="flex items-center gap-4 p-3 rounded-xl hover:bg-gray-50 transition-colors group"
+                >
+                  <div className="w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0" style={{ backgroundColor: color }}>
+                    {initials}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-gray-900 truncate group-hover:text-primary">{task.title}</p>
+                    <p className="text-xs text-gray-400 truncate">{assignee?.name} · Due {formatDate(task.deadline)}</p>
+                  </div>
+                  <PriorityBadge priority={task.priority} />
+                  <StatusBadge status={task.status} />
+                </Link>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default ManagerDashboard;
