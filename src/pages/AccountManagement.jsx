@@ -38,23 +38,38 @@ const AccountManagement = () => {
     return Object.keys(e).length === 0;
   };
 
+  const showTempPassword = (name, email, password) => {
+    setCreatedUser({ name, email, tempPassword: password });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    toast.success(
+      `Password for ${name}: ${password}`,
+      { duration: 30000, icon: '🔑', style: { maxWidth: '500px' } }
+    );
+  };
+
   const handleCreate = async (e) => {
     e.preventDefault();
     if (!validate()) return;
     setSubmitting(true);
     try {
       const res = await api.post('/users', { ...form, role: targetRole });
-      setCreatedUser({
-        name: res.data.user.name,
-        email: res.data.user.email,
-        tempPassword: res.data.tempPassword,
-      });
+      showTempPassword(res.data.user.name, res.data.user.email, res.data.tempPassword);
       setShowModal(false);
       setForm({ name: '', email: '', department: '', phone: '' });
       fetchUsers();
     } catch (err) {
       toast.error(err.response?.data?.message || 'Failed to create user');
     } finally { setSubmitting(false); }
+  };
+
+  const handleResetPassword = async (u) => {
+    if (!window.confirm(`Reset password for ${u.name}? They will need to change it on next login.`)) return;
+    try {
+      const res = await api.post(`/users/${u._id}/reset-password`);
+      showTempPassword(u.name, u.email, res.data.tempPassword);
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to reset password');
+    }
   };
 
   const handleToggleActive = async (u) => {
@@ -200,16 +215,24 @@ const AccountManagement = () => {
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <button
-                          onClick={() => handleToggleActive(u)}
-                          className={`text-xs font-medium px-3 py-1.5 rounded-lg transition-all ${
-                            u.isActive
-                              ? 'text-red-600 hover:bg-red-50 border border-red-200'
-                              : 'text-green-600 hover:bg-green-50 border border-green-200'
-                          }`}
-                        >
-                          {u.isActive ? 'Deactivate' : 'Activate'}
-                        </button>
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => handleResetPassword(u)}
+                            className="text-xs font-medium px-3 py-1.5 rounded-lg transition-all text-blue-600 hover:bg-blue-50 border border-blue-200"
+                          >
+                            Reset Password
+                          </button>
+                          <button
+                            onClick={() => handleToggleActive(u)}
+                            className={`text-xs font-medium px-3 py-1.5 rounded-lg transition-all ${
+                              u.isActive
+                                ? 'text-red-600 hover:bg-red-50 border border-red-200'
+                                : 'text-green-600 hover:bg-green-50 border border-green-200'
+                            }`}
+                          >
+                            {u.isActive ? 'Deactivate' : 'Activate'}
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   );
