@@ -17,7 +17,7 @@ const api = axios.create({
     'Content-Type': 'application/json',
     'X-Requested-With': 'XMLHttpRequest',
   },
-  timeout: 15000,
+  timeout: 45000,
 });
 
 api.interceptors.request.use(
