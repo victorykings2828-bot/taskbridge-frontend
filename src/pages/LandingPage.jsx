@@ -64,7 +64,7 @@ const LandingPage = () => {
       {/* ── Hero ── */}
       <section className="relative bg-navy min-h-[92vh] flex items-center overflow-hidden">
         {/* Background grid */}
-        <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'linear-gradient(var(--tw-gradient-stops))', backgroundSize: '60px 60px', backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)' }} />
+        <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
         {/* Accent blobs */}
         <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-brand/10 rounded-full blur-3xl" />
         <div className="absolute bottom-1/4 left-1/4 w-64 h-64 bg-brand/5 rounded-full blur-3xl" />

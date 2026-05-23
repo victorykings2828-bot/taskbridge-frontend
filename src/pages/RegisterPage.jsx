@@ -5,7 +5,7 @@ import toast from 'react-hot-toast';
 import api from '../utils/api';
 
 const RegisterPage = () => {
-  const { setUser: setAuthUser } = useAuth();
+  const { applyAuth } = useAuth();
   const navigate = useNavigate();
   const [step, setStep] = useState(1); // 1=company, 2=admin account
   const [submitting, setSubmitting] = useState(false);
@@ -70,6 +70,7 @@ const RegisterPage = () => {
         adminPassword: form.adminPassword,
       });
       if (res.data.success) {
+        applyAuth(res.data);
         toast.success(`Welcome to TaskBridge, ${form.adminName.split(' ')[0]}!`);
         navigate('/dashboard');
       }

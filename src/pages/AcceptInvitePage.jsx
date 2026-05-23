@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import api from '../utils/api';
+import { useAuth } from '../context/AuthContext';
 
 const EMAIL_RE = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\.[a-zA-Z]{2,}$/;
 
@@ -19,6 +20,7 @@ const passwordStrength = (p) => {
 export default function AcceptInvitePage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { applyAuth } = useAuth();
   const [form, setForm] = useState({ code: searchParams.get('code') || '', name: '', password: '', confirm: '' });
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
@@ -46,6 +48,7 @@ export default function AcceptInvitePage() {
     try {
       const res = await api.post('/org/invite/accept', { code: form.code.trim(), name: form.name.trim(), password: form.password });
       if (res.data.success) {
+        applyAuth(res.data);
         toast.success(res.data.message);
         navigate('/dashboard');
       }

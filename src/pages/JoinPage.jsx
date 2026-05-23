@@ -13,7 +13,7 @@ const JoinPage = () => {
   const [orgPreview, setOrgPreview] = useState(null);
 
   const handleCodeChange = (e) => {
-    const val = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6);
+    const val = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8);
     setCode(val);
     setError('');
     setOrgPreview(null);
@@ -21,7 +21,7 @@ const JoinPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (code.length !== 6) { setError('Enter a 6-character company code'); return; }
+    if (code.length !== 8) { setError('Enter an 8-character company code'); return; }
     setSubmitting(true);
     try {
       const res = await api.post('/org/join', { joinCode: code });
@@ -67,7 +67,7 @@ const JoinPage = () => {
             </svg>
           </div>
           <h1 className="text-xl font-bold text-navy mb-1">Join your company</h1>
-          <p className="text-navy-500 text-sm mb-6">Enter the 6-character code your admin shared with you</p>
+          <p className="text-navy-500 text-sm mb-6">Enter the 8-character code your admin shared with you</p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
@@ -75,22 +75,22 @@ const JoinPage = () => {
                 type="text"
                 value={code}
                 onChange={handleCodeChange}
-                placeholder="e.g. AB12CD"
-                maxLength={6}
+                placeholder="e.g. AB12CD34"
+                maxLength={8}
                 className={`w-full px-4 py-4 rounded-xl border text-center text-2xl font-bold tracking-[0.5em] outline-none transition-all focus:ring-2 ${
                   error ? 'border-danger bg-danger/5 text-danger focus:ring-danger/20 focus:border-danger'
-                        : code.length === 6 ? 'border-success bg-success/5 text-success focus:ring-success/20 focus:border-success'
+                        : code.length === 8 ? 'border-success bg-success/5 text-success focus:ring-success/20 focus:border-success'
                         : 'border-navy-200 bg-bg text-navy focus:ring-brand/20 focus:border-brand'
                 }`}
                 style={{ letterSpacing: '0.4em' }}
               />
               {error && <p className="text-danger text-xs mt-2 flex items-center justify-center gap-1"><span>⚠</span>{error}</p>}
-              {code.length > 0 && code.length < 6 && !error && (
-                <p className="text-navy-400 text-xs mt-2">{6 - code.length} more characters needed</p>
+              {code.length > 0 && code.length < 8 && !error && (
+                <p className="text-navy-400 text-xs mt-2">{8 - code.length} more characters needed</p>
               )}
             </div>
 
-            <button type="submit" disabled={submitting || code.length !== 6}
+            <button type="submit" disabled={submitting || code.length !== 8}
               className="w-full bg-brand hover:bg-brand-dark text-white font-semibold py-3 rounded-xl transition-all disabled:opacity-50 flex items-center justify-center gap-2">
               {submitting ? <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />Joining...</> : 'Join company'}
             </button>

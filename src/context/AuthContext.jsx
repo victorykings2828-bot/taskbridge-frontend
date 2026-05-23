@@ -45,11 +45,15 @@ export const AuthProvider = ({ children }) => {
     fetchMe();
   }, [fetchMe]);
 
+  const applyAuth = useCallback((data) => {
+    if (data.accessToken) setAccessToken(data.accessToken);
+    if (data.user) setUser(data.user);
+    setRequirePasswordChange(Boolean(data.requirePasswordChange || data.user?.isFirstLogin));
+  }, []);
+
   const login = async (email, password) => {
     const res = await api.post('/auth/login', { email, password });
-    setAccessToken(res.data.accessToken); // Store in memory only
-    setUser(res.data.user);
-    setRequirePasswordChange(res.data.requirePasswordChange);
+    applyAuth(res.data);
     return res.data;
   };
 
@@ -75,7 +79,7 @@ export const AuthProvider = ({ children }) => {
   return (
     <AuthContext.Provider value={{
       user, loading, requirePasswordChange,
-      login, logout, changePassword, fetchMe,
+      login, logout, changePassword, fetchMe, applyAuth,
     }}>
       {children}
     </AuthContext.Provider>

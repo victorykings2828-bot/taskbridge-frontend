@@ -10,6 +10,7 @@ import LandingPage             from './pages/LandingPage';
 import LoginPage               from './pages/LoginPage';
 import RegisterPage            from './pages/RegisterPage';
 import JoinPage                from './pages/JoinPage';
+import AcceptInvitePage        from './pages/AcceptInvitePage';
 import ForgotPasswordPage      from './pages/ForgotPasswordPage';
 import ResetPasswordPage       from './pages/ResetPasswordPage';
 import AnalyticsPage           from './pages/AnalyticsPage';
@@ -55,6 +56,8 @@ function App() {
           <Route path="/register"   element={<RegisterPage />} />
           <Route path="/login"      element={<LoginPage />} />
           <Route path="/join"       element={<JoinPage />} />
+          <Route path="/invite/accept" element={<AcceptInvitePage />} />
+          <Route path="/accept-invite" element={<AcceptInvitePage />} />
           <Route path="/forgot-password"         element={<ForgotPasswordPage />} />
           <Route path="/reset-password/:token"   element={<ResetPasswordPage />} />
           <Route path="/auth/google/success" element={<GoogleAuthSuccess />} />

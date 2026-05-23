@@ -3,7 +3,7 @@ import { useNavigate, Navigate, useSearchParams, useLocation, Link } from 'react
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000/api';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 // RFC 5322 compliant email regex
 const EMAIL_RE = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\.[a-zA-Z]{2,}$/;
