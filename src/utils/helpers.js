@@ -28,12 +28,12 @@ export const PRIORITY_CONFIG = {
 };
 
 export const STATUS_CONFIG = {
-  not_started:  { label: 'Not Started',  color: 'text-gray-600',   bg: 'bg-gray-100',   border: 'border-gray-200' },
+  not_started:  { label: 'Not Started',  color: 'text-navy-600',   bg: 'bg-navy-100',   border: 'border-navy-200' },
   in_progress:  { label: 'In Progress',  color: 'text-blue-600',   bg: 'bg-blue-50',    border: 'border-blue-200' },
   under_review: { label: 'Under Review', color: 'text-amber-600',  bg: 'bg-amber-50',   border: 'border-amber-200' },
   completed:    { label: 'Completed',    color: 'text-green-600',  bg: 'bg-green-50',   border: 'border-green-200' },
   overdue:      { label: 'Overdue',      color: 'text-red-600',    bg: 'bg-red-50',     border: 'border-red-200' },
-  cancelled:    { label: 'Cancelled',    color: 'text-gray-400',   bg: 'bg-gray-50',    border: 'border-gray-200' },
+  cancelled:    { label: 'Cancelled',    color: 'text-navy-400',   bg: 'bg-surface-2',  border: 'border-navy-200' },
 };
 
 export const ROLE_LABELS = {

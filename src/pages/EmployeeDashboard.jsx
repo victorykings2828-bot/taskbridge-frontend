@@ -161,7 +161,7 @@ const EmployeeDashboard = () => {
               <Link
                 key={task._id}
                 to={`/tasks/${task._id}`}
-                className="flex items-center justify-between p-3 bg-white rounded-xl border border-amber-100 hover:border-amber-300 transition-colors"
+                className="flex items-center justify-between p-3 bg-surface rounded-xl border border-amber-100 hover:border-amber-300 transition-colors"
               >
                 <p className="text-sm font-medium text-navy">{task.title}</p>
                 <p className="text-xs text-amber-600">Submitted {formatDate(task.submittedAt)}</p>

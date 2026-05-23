@@ -207,7 +207,7 @@ export default function SubscriptionPage() {
       <div className="flex gap-1 bg-surface-2 p-1 rounded-xl border border-navy-200 w-fit flex-wrap">
         {tabs.map(t => (
           <button key={t.id} onClick={() => setTab(t.id)}
-            className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${tab === t.id ? 'bg-white text-navy shadow-sm border border-navy-200' : 'text-navy-500 hover:text-navy'}`}>
+            className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${tab === t.id ? 'bg-surface text-navy shadow-sm border border-navy-200' : 'text-navy-500 hover:text-navy'}`}>
             {t.label}
           </button>
         ))}

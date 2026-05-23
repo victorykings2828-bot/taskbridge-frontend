@@ -40,7 +40,7 @@ const BarChart = ({ data, maxVal, color = '#0EA5E9', label = 'count' }) => (
               style={{ height: `${h}%`, minHeight: '4px', backgroundColor: color, borderRadius: '4px 4px 0 0', transition: 'height 0.3s ease' }}
               className="w-full cursor-pointer opacity-80 hover:opacity-100 group-hover:opacity-100"
             />
-            <span className="absolute -top-5 text-xs text-navy-500 hidden group-hover:block bg-white border border-navy-200 px-1.5 py-0.5 rounded shadow-sm whitespace-nowrap z-10">
+            <span className="absolute -top-5 text-xs text-navy-500 hidden group-hover:block bg-surface border border-navy-200 px-1.5 py-0.5 rounded shadow-sm whitespace-nowrap z-10">
               {d.count}
             </span>
           </div>
@@ -110,7 +110,7 @@ export default function AnalyticsPage() {
         <div className="flex items-center gap-2 bg-surface-2 border border-navy-200 rounded-xl p-1">
           {[['7d','7 days'],['30d','30 days'],['all','All time']].map(([v,l]) => (
             <button key={v} onClick={() => setPeriod(v)}
-              className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all ${period === v ? 'bg-white text-navy shadow-sm border border-navy-200' : 'text-navy-500 hover:text-navy'}`}>
+              className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all ${period === v ? 'bg-surface text-navy shadow-sm border border-navy-200' : 'text-navy-500 hover:text-navy'}`}>
               {l}
             </button>
           ))}

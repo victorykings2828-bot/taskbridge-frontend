@@ -146,7 +146,7 @@ const AccountManagement = () => {
               <p className="text-green-700 text-sm mb-3">
                 Share these credentials with <strong>{createdUser.name}</strong>:
               </p>
-              <div className="bg-white rounded-xl border border-green-200 p-4 space-y-3">
+              <div className="bg-surface rounded-xl border border-green-200 p-4 space-y-3">
                 <div className="flex items-center gap-3">
                   <span className="text-xs text-navy-500 font-medium w-20">Email</span>
                   <span className="text-sm text-navy font-mono font-semibold flex-1">{createdUser.email}</span>
