@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import api from '../utils/api';
 
 const LandingPage = () => {
   const [plans, setPlans] = useState([]);
@@ -12,9 +13,8 @@ const LandingPage = () => {
   }, []);
 
   useEffect(() => {
-    fetch('/api/org/plans')
-      .then(r => r.json())
-      .then(d => { if (d.success) setPlans(d.plans); })
+    api.get('/org/plans')
+      .then(r => { if (r.data.success) setPlans(r.data.plans); })
       .catch(() => {});
   }, []);
 
@@ -31,6 +31,37 @@ const LandingPage = () => {
     { n: '01', title: 'Register your company', desc: 'Create your TaskBridge workspace in under 2 minutes. Just your company name and email.' },
     { n: '02', title: 'Invite your team', desc: 'Add managers and employees. Share the company join code for easy onboarding.' },
     { n: '03', title: 'Start assigning work', desc: 'Create tasks, set deadlines, track progress. Your whole team, coordinated.' },
+  ];
+
+  // Fallback plans if API fetch fails
+  const displayPlans = plans.length > 0 ? plans.map(p => ({
+    id: p.id,
+    name: p.name,
+    badge: p.badge,
+    highlighted: p.highlighted,
+    description: p.description,
+    features: p.features?.filter(f => f.included).map(f => f.text) || [],
+    cta: p.id === 'free' ? 'Get started free' : (p.id === 'pro' ? 'Contact us' : 'Contact us'),
+    ctaLink: p.id === 'free' ? '/register' : 'mailto:hello@taskbridge.io',
+  })) : [
+    {
+      id: 'free', name: 'Starter', badge: null, highlighted: false,
+      description: 'Perfect for a solo manager with a small team',
+      features: ['1 Manager account', 'Up to 5 employees', 'Task creation & tracking', 'In-app notifications', 'Employee & manager dashboards', 'Email support'],
+      cta: 'Get started free', ctaLink: '/register',
+    },
+    {
+      id: 'pro', name: 'Pro', badge: 'Most Popular', highlighted: true,
+      description: 'Everything a growing team needs, simple and affordable',
+      features: ['Up to 5 Managers', 'Up to 100 employees per manager', 'Task priority levels', 'Team workload overview', 'Feedback & 5-star ratings', 'Performance dashboards', 'Deadline overdue alerts', 'Task revision workflow'],
+      cta: 'Contact us', ctaLink: 'mailto:hello@taskbridge.io',
+    },
+    {
+      id: 'enterprise', name: 'Enterprise', badge: null, highlighted: false,
+      description: 'Unlimited scale and full visibility across your organisation',
+      features: ['Unlimited managers', 'Unlimited employees', 'Everything in Pro', 'Full audit log & export', 'Cross-team workload balancing', 'Manager benchmarking', 'Custom company branding', 'Priority support'],
+      cta: 'Contact us', ctaLink: 'mailto:hello@taskbridge.io',
+    },
   ];
 
   return (
@@ -171,30 +202,11 @@ const LandingPage = () => {
           <div className="text-center mb-14">
             <span className="text-brand text-sm font-semibold tracking-widest uppercase">Plans</span>
             <h2 className="text-3xl font-bold text-navy mt-2">The right plan for your team size</h2>
-            <p className="text-navy-500 mt-3">Start free. Get in touch when you need more.</p>
+            <p className="text-navy-500 mt-3">Start free. Upgrade when you need more.</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
-            {[
-              {
-                id: 'free', name: 'Starter', badge: null, highlighted: false,
-                description: 'Perfect for a solo manager with a small team',
-                features: ['1 Manager account', 'Up to 5 employees', 'Task creation & tracking', 'In-app notifications', 'Employee & manager dashboards', 'Email support'],
-                cta: 'Get started free', ctaLink: '/register',
-              },
-              {
-                id: 'pro', name: 'Pro', badge: 'Most Popular', highlighted: true,
-                description: 'Everything a growing team needs, simple and affordable',
-                features: ['Up to 5 Managers', 'Up to 100 employees per manager', 'Task priority levels', 'Team workload overview', 'Feedback & 5-star ratings', 'Performance dashboards', 'Deadline overdue alerts', 'Task revision workflow'],
-                cta: 'Contact us', ctaLink: 'mailto:hello@taskbridge.io',
-              },
-              {
-                id: 'enterprise', name: 'Enterprise', badge: null, highlighted: false,
-                description: 'Unlimited scale and full visibility across your organisation',
-                features: ['Unlimited managers', 'Unlimited employees', 'Everything in Pro', 'Full audit log & export', 'Cross-team workload balancing', 'Manager benchmarking', 'Custom company branding', 'Priority support'],
-                cta: 'Contact us', ctaLink: 'mailto:hello@taskbridge.io',
-              },
-            ].map((plan) => (
+            {displayPlans.map((plan) => (
               <div key={plan.id} className={`relative rounded-2xl p-6 border transition-all ${plan.highlighted ? 'bg-brand border-brand shadow-lg shadow-brand/15 scale-105' : 'bg-surface border-navy-200 hover:border-brand/30 hover:shadow-card-md'}`}>
                 {plan.badge && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2">
