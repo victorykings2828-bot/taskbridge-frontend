@@ -62,7 +62,16 @@ const AdminEmployeeProfilePage = () => {
 
   if (!data) return null;
 
-  const { employee, taskStats, tasks, feedbacks, avgRating } = data;
+  const { employee, taskStats: rawTaskStats, stats, tasks = [], feedbacks = [], avgRating } = data;
+  const taskStats = {
+    totalTasks: 0,
+    completedTasks: 0,
+    inProgressTasks: 0,
+    underReviewTasks: 0,
+    overdueTasks: 0,
+    completionRate: 0,
+    ...(rawTaskStats || stats || {}),
+  };
   const color = generateAvatarColor(employee.name);
 
   const RATING_LABELS = ['', 'Poor', 'Below Average', 'Average', 'Good', 'Excellent'];

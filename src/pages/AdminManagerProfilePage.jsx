@@ -28,7 +28,16 @@ const AdminManagerProfilePage = () => {
   );
 
   if (!data) return null;
-  const { manager, employees, taskStats, recentTasks } = data;
+  const { manager, employees = [], taskStats: rawTaskStats, stats, recentTasks = [] } = data;
+  const taskStats = {
+    totalTasks: 0,
+    completedTasks: 0,
+    inProgressTasks: 0,
+    underReviewTasks: 0,
+    overdueTasks: 0,
+    completionRate: 0,
+    ...(rawTaskStats || stats || {}),
+  };
   const color = generateAvatarColor(manager.name);
 
   return (

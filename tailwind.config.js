@@ -30,6 +30,8 @@ export default {
         'brand-light': '#38BDF8',
         'brand-50': '#F0F9FF',
         'brand-100':'#E0F2FE',
+        primary:   '#0EA5E9',
+        'primary-light': '#38BDF8',
 
         // Semantics
         success:   '#10B981',
