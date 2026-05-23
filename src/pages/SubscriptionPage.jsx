@@ -235,6 +235,10 @@ export default function SubscriptionPage() {
                 <p className="text-xs text-navy-400 uppercase tracking-wide font-medium mb-1">Join code</p>
                 <div className="flex items-center gap-2 justify-end">
                   <span className="font-mono font-bold text-navy text-xl tracking-[0.3em] bg-brand-50 border border-brand-100 px-3 py-1.5 rounded-lg">{org.joinCode}</span>
+                  <button onClick={() => { navigator.clipboard.writeText(org.joinCode); toast.success('Join code copied!'); }} title="Copy code"
+                    className="p-2 text-navy-400 hover:text-brand border border-navy-200 rounded-lg transition-all">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="13" height="13" rx="2" stroke="currentColor" strokeWidth="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" stroke="currentColor" strokeWidth="2"/></svg>
+                  </button>
                   <button onClick={handleRotate} disabled={rotating} title="Regenerate"
                     className="p-2 text-navy-400 hover:text-danger border border-navy-200 rounded-lg transition-all">
                     {rotating
@@ -244,6 +248,14 @@ export default function SubscriptionPage() {
                   </button>
                 </div>
                 <p className="text-navy-400 text-xs mt-1">Rotates after each use</p>
+                <button onClick={() => {
+                  const joinUrl = `${window.location.origin}/join`;
+                  navigator.clipboard.writeText(`Join our workspace on TaskBridge!\nJoin link: ${joinUrl}\nCode: ${org.joinCode}`);
+                  toast.success('Join details copied! Share with your team.');
+                }} className="mt-2 text-xs text-brand font-medium hover:text-brand-dark flex items-center gap-1 ml-auto">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                  Copy join link to share
+                </button>
               </div>
             </div>
 
