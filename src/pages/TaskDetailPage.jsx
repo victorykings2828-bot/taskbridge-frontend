@@ -159,9 +159,9 @@ const TaskDetailPage = () => {
   if (loading) {
     return (
       <div className="animate-pulse space-y-4 max-w-3xl">
-        <div className="h-6 bg-gray-200 rounded w-32" />
-        <div className="h-48 bg-gray-200 rounded-2xl" />
-        <div className="h-32 bg-gray-200 rounded-2xl" />
+        <div className="h-6 bg-navy-200 rounded w-32" />
+        <div className="h-48 bg-navy-200 rounded-2xl" />
+        <div className="h-32 bg-navy-200 rounded-2xl" />
       </div>
     );
   }
@@ -175,15 +175,15 @@ const TaskDetailPage = () => {
     <div className="animate-fade-in max-w-3xl">
       {/* Back */}
       <button onClick={() => navigate('/tasks')}
-        className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 mb-6 transition-colors">
+        className="flex items-center gap-2 text-sm text-navy-500 hover:text-navy mb-6 transition-colors">
         ← Back to tasks
       </button>
 
       {/* Header Card */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-5">
+      <div className="bg-surface rounded-2xl shadow-card border border-navy-200 p-6 mb-5">
         <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
           <div className="flex-1 min-w-0">
-            <h1 className="text-xl font-bold text-gray-900 mb-3">{task.title}</h1>
+            <h1 className="text-xl font-bold text-navy mb-3">{task.title}</h1>
             <div className="flex flex-wrap gap-2">
               <PriorityBadge priority={task.priority} />
               <StatusBadge status={task.status} />
@@ -196,43 +196,43 @@ const TaskDetailPage = () => {
           </div>
         </div>
 
-        <p className="text-gray-600 text-sm leading-relaxed mb-5 whitespace-pre-wrap">{task.description}</p>
+        <p className="text-navy-600 text-sm leading-relaxed mb-5 whitespace-pre-wrap">{task.description}</p>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm border-t border-gray-100 pt-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm border-t border-navy-200 pt-4">
           <div>
-            <p className="text-xs text-gray-400 mb-0.5">Assigned to</p>
-            <p className="font-medium text-gray-800">{task.assignedTo?.name}</p>
+            <p className="text-xs text-navy-400 mb-0.5">Assigned to</p>
+            <p className="font-medium text-navy">{task.assignedTo?.name}</p>
           </div>
           <div>
-            <p className="text-xs text-gray-400 mb-0.5">Assigned by</p>
-            <p className="font-medium text-gray-800">{task.assignedBy?.name}</p>
+            <p className="text-xs text-navy-400 mb-0.5">Assigned by</p>
+            <p className="font-medium text-navy">{task.assignedBy?.name}</p>
           </div>
           <div>
-            <p className="text-xs text-gray-400 mb-0.5">Deadline</p>
-            <p className={`font-medium ${task.status === 'overdue' ? 'text-red-600' : 'text-gray-800'}`}>
+            <p className="text-xs text-navy-400 mb-0.5">Deadline</p>
+            <p className={`font-medium ${task.status === 'overdue' ? 'text-red-600' : 'text-navy'}`}>
               {formatDate(task.deadline)}
             </p>
           </div>
           <div>
-            <p className="text-xs text-gray-400 mb-0.5">Created</p>
-            <p className="font-medium text-gray-800">{formatDateTime(task.createdAt)}</p>
+            <p className="text-xs text-navy-400 mb-0.5">Created</p>
+            <p className="font-medium text-navy">{formatDateTime(task.createdAt)}</p>
           </div>
           {task.acceptedAt && (
             <div>
-              <p className="text-xs text-gray-400 mb-0.5">Accepted</p>
-              <p className="font-medium text-gray-800">{formatDate(task.acceptedAt)}</p>
+              <p className="text-xs text-navy-400 mb-0.5">Accepted</p>
+              <p className="font-medium text-navy">{formatDate(task.acceptedAt)}</p>
             </div>
           )}
           {task.submittedAt && (
             <div>
-              <p className="text-xs text-gray-400 mb-0.5">Submitted</p>
-              <p className="font-medium text-gray-800">{formatDate(task.submittedAt)}</p>
+              <p className="text-xs text-navy-400 mb-0.5">Submitted</p>
+              <p className="font-medium text-navy">{formatDate(task.submittedAt)}</p>
             </div>
           )}
           {task.completedAt && (
             <div>
-              <p className="text-xs text-gray-400 mb-0.5">Completed</p>
-              <p className="font-medium text-gray-800">{formatDate(task.completedAt)}</p>
+              <p className="text-xs text-navy-400 mb-0.5">Completed</p>
+              <p className="font-medium text-navy">{formatDate(task.completedAt)}</p>
             </div>
           )}
         </div>
@@ -253,8 +253,8 @@ const TaskDetailPage = () => {
 
       {/* Employee Actions */}
       {isAssignee && (
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-5">
-          <h2 className="text-base font-semibold text-gray-900 mb-4">Your Actions</h2>
+        <div className="bg-surface rounded-2xl shadow-card border border-navy-200 p-6 mb-5">
+          <h2 className="text-base font-semibold text-navy mb-4">Your Actions</h2>
 
           {task.status === 'not_started' && (
             <div className="space-y-3">
@@ -275,7 +275,7 @@ const TaskDetailPage = () => {
                     value={flagReason}
                     onChange={(e) => setFlagReason(e.target.value)}
                     placeholder="Describe the issue (e.g. unclear requirements, missing resources...)"
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm outline-none focus:border-orange-400 resize-none"
+                    className="w-full px-4 py-3 rounded-xl border border-navy-200 bg-surface-2 text-sm outline-none focus:border-orange-400 resize-none"
                   />
                   <button onClick={() => handleAcceptOrFlag('flag')} disabled={actionLoading || !flagReason.trim()}
                     className="px-4 py-2 bg-orange-500 text-white text-sm font-semibold rounded-xl hover:bg-orange-600 disabled:opacity-60 transition-all">
@@ -294,19 +294,19 @@ const TaskDetailPage = () => {
                   📤 Submit for Review
                 </button>
                 <button onClick={() => setShowExtensionInput(!showExtensionInput)}
-                  className="px-5 py-2.5 bg-gray-50 text-gray-600 border border-gray-200 text-sm font-semibold rounded-xl hover:bg-gray-100 transition-all">
+                  className="px-5 py-2.5 bg-surface-2 text-navy-600 border border-navy-200 text-sm font-semibold rounded-xl hover:bg-navy-100 transition-all">
                   📅 Request Extension
                 </button>
               </div>
               {showExtensionInput && (
-                <div className="space-y-2 p-4 bg-gray-50 rounded-xl border border-gray-200">
-                  <p className="text-xs font-medium text-gray-600">Request a deadline extension</p>
+                <div className="space-y-2 p-4 bg-surface-2 rounded-xl border border-navy-200">
+                  <p className="text-xs font-medium text-navy-600">Request a deadline extension</p>
                   <input type="date" value={extensionDate} onChange={(e) => setExtensionDate(e.target.value)}
                     min={new Date().toISOString().split('T')[0]}
-                    className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm outline-none focus:border-blue-500" />
+                    className="w-full px-3 py-2 rounded-lg border border-navy-200 text-sm outline-none focus:border-brand" />
                   <textarea rows={2} value={extensionReason} onChange={(e) => setExtensionReason(e.target.value)}
                     placeholder="Why do you need more time?"
-                    className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-white text-sm outline-none focus:border-blue-500 resize-none" />
+                    className="w-full px-3 py-2 rounded-lg border border-navy-200 bg-surface text-sm outline-none focus:border-brand resize-none" />
                   <button onClick={handleExtensionRequest} disabled={actionLoading || !extensionDate || !extensionReason.trim()}
                     className="px-4 py-2 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary-light disabled:opacity-60 transition-all">
                     Submit Request
@@ -341,8 +341,8 @@ const TaskDetailPage = () => {
 
       {/* Manager - Edit/Cancel task (only before accepted) */}
       {isManager && task.status === 'not_started' && (
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-5">
-          <h2 className="text-base font-semibold text-gray-900 mb-4">Manage Task</h2>
+        <div className="bg-surface rounded-2xl shadow-card border border-navy-200 p-6 mb-5">
+          <h2 className="text-base font-semibold text-navy mb-4">Manage Task</h2>
           <div className="flex flex-wrap gap-3">
             <button
               onClick={() => navigate(`/tasks/${id}/edit`)}
@@ -354,7 +354,7 @@ const TaskDetailPage = () => {
               🗑 Cancel Task
             </button>
           </div>
-          <p className="text-xs text-gray-400 mt-3">Tasks can only be edited or cancelled before the employee accepts them.</p>
+          <p className="text-xs text-navy-400 mt-3">Tasks can only be edited or cancelled before the employee accepts them.</p>
         </div>
       )}
 
@@ -381,9 +381,9 @@ const TaskDetailPage = () => {
 
       {/* Manager Review Actions */}
       {isManager && task.status === 'under_review' && (
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-5">
-          <h2 className="text-base font-semibold text-gray-900 mb-2">Review Submission</h2>
-          <p className="text-sm text-gray-500 mb-4">Employee has submitted this task. Please review and decide.</p>
+        <div className="bg-surface rounded-2xl shadow-card border border-navy-200 p-6 mb-5">
+          <h2 className="text-base font-semibold text-navy mb-2">Review Submission</h2>
+          <p className="text-sm text-navy-500 mb-4">Employee has submitted this task. Please review and decide.</p>
           <div className="flex flex-wrap gap-3 mb-3">
             <button onClick={() => handleReview('approve')} disabled={actionLoading}
               className="px-5 py-2.5 bg-green-600 text-white text-sm font-semibold rounded-xl hover:bg-green-700 transition-all disabled:opacity-60">
@@ -398,7 +398,7 @@ const TaskDetailPage = () => {
             <div className="space-y-2">
               <textarea rows={3} value={revisionNote} onChange={(e) => setRevisionNote(e.target.value)}
                 placeholder="Describe what needs to be revised or improved..."
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm outline-none focus:border-amber-400 resize-none"
+                className="w-full px-4 py-3 rounded-xl border border-navy-200 bg-surface-2 text-sm outline-none focus:border-amber-400 resize-none"
               />
               <button onClick={() => handleReview('revision')} disabled={actionLoading || !revisionNote.trim()}
                 className="px-4 py-2 bg-amber-500 text-white text-sm font-semibold rounded-xl hover:bg-amber-600 disabled:opacity-60 transition-all">
@@ -420,31 +420,31 @@ const TaskDetailPage = () => {
 
       {/* Files & Deliverables */}
       {(task.files?.length > 0 || task.deliverables?.length > 0 || isManager || isAssignee) && (
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-5">
-          <h2 className="text-base font-semibold text-gray-900 mb-4">Files & Deliverables</h2>
+        <div className="bg-surface rounded-2xl shadow-card border border-navy-200 p-6 mb-5">
+          <h2 className="text-base font-semibold text-navy mb-4">Files & Deliverables</h2>
 
           {/* Manager: task attachments */}
           {(task.files?.length > 0 || isManager) && (
             <div className="mb-4">
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Task Attachments</p>
+              <p className="text-xs font-semibold text-navy-500 uppercase tracking-wide mb-2">Task Attachments</p>
               {task.files?.length > 0 ? (
                 <div className="space-y-2 mb-3">
                   {task.files.map((f, i) => (
-                    <div key={i} className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl border border-gray-100">
+                    <div key={i} className="flex items-center gap-3 p-3 bg-surface-2 rounded-xl border border-navy-200">
                       <span className="text-lg">📎</span>
-                      <span className="text-sm text-gray-700 flex-1 truncate">{f.name}</span>
+                      <span className="text-sm text-navy flex-1 truncate">{f.name}</span>
                       {!f.url.startsWith('mock://') && (
                         <a href={f.url} target="_blank" rel="noreferrer"
-                          className="text-xs text-blue-600 hover:underline font-medium">Download</a>
+                          className="text-xs text-brand hover:underline font-medium">Download</a>
                       )}
                     </div>
                   ))}
                 </div>
               ) : (
-                <p className="text-sm text-gray-400 mb-3">No attachments yet</p>
+                <p className="text-sm text-navy-400 mb-3">No attachments yet</p>
               )}
               {isManager && (
-                <label className="inline-flex items-center gap-2 px-4 py-2 bg-gray-50 border border-gray-200 text-sm font-medium text-gray-600 rounded-xl hover:bg-gray-100 cursor-pointer transition-all">
+                <label className="inline-flex items-center gap-2 px-4 py-2 bg-surface-2 border border-navy-200 text-sm font-medium text-navy-600 rounded-xl hover:bg-navy-100 cursor-pointer transition-all">
                   <span>📎</span> Attach File
                   <input type="file" className="hidden" onChange={async (e) => {
                     const file = e.target.files[0];
@@ -466,22 +466,22 @@ const TaskDetailPage = () => {
           {/* Employee: deliverables */}
           {(task.deliverables?.length > 0 || isAssignee) && (
             <div>
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Deliverables</p>
+              <p className="text-xs font-semibold text-navy-500 uppercase tracking-wide mb-2">Deliverables</p>
               {task.deliverables?.length > 0 ? (
                 <div className="space-y-2 mb-3">
                   {task.deliverables.map((f, i) => (
                     <div key={i} className="flex items-center gap-3 p-3 bg-green-50 rounded-xl border border-green-100">
                       <span className="text-lg">📄</span>
-                      <span className="text-sm text-gray-700 flex-1 truncate">{f.name}</span>
+                      <span className="text-sm text-navy flex-1 truncate">{f.name}</span>
                       {!f.url.startsWith('mock://') && (
                         <a href={f.url} target="_blank" rel="noreferrer"
-                          className="text-xs text-blue-600 hover:underline font-medium">Download</a>
+                          className="text-xs text-brand hover:underline font-medium">Download</a>
                       )}
                     </div>
                   ))}
                 </div>
               ) : (
-                <p className="text-sm text-gray-400 mb-3">No deliverables uploaded yet</p>
+                <p className="text-sm text-navy-400 mb-3">No deliverables uploaded yet</p>
               )}
               {isAssignee && ['in_progress', 'under_review'].includes(task.status) && (
                 <label className="inline-flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-200 text-sm font-medium text-green-700 rounded-xl hover:bg-green-100 cursor-pointer transition-all">
@@ -506,10 +506,10 @@ const TaskDetailPage = () => {
       )}
 
       {/* Comments */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-        <h2 className="text-base font-semibold text-gray-900 mb-4">
+      <div className="bg-surface rounded-2xl shadow-card border border-navy-200 p-6">
+        <h2 className="text-base font-semibold text-navy mb-4">
           Comments
-          {comments.length > 0 && <span className="text-gray-400 font-normal text-sm ml-1">({comments.length})</span>}
+          {comments.length > 0 && <span className="text-navy-400 font-normal text-sm ml-1">({comments.length})</span>}
         </h2>
 
         {/* Comment Input */}
@@ -524,7 +524,7 @@ const TaskDetailPage = () => {
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 placeholder="Write a comment..."
-                className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-sm outline-none focus:border-blue-500 focus:bg-white transition-all"
+                className="flex-1 px-4 py-2.5 rounded-xl border border-navy-200 bg-surface-2 text-sm outline-none focus:border-brand focus:bg-surface transition-all"
               />
               <button type="submit" disabled={submitting || !comment.trim()}
                 className="px-4 py-2.5 bg-primary text-white text-sm font-semibold rounded-xl hover:bg-primary-light transition-all disabled:opacity-60 whitespace-nowrap">
@@ -539,16 +539,16 @@ const TaskDetailPage = () => {
           <div className="space-y-3">
             {[1, 2].map((i) => (
               <div key={i} className="flex gap-3 animate-pulse">
-                <div className="w-8 h-8 rounded-full bg-gray-200 flex-shrink-0" />
+                <div className="w-8 h-8 rounded-full bg-navy-200 flex-shrink-0" />
                 <div className="flex-1 space-y-2">
-                  <div className="h-3 bg-gray-200 rounded w-24" />
-                  <div className="h-4 bg-gray-200 rounded w-full" />
+                  <div className="h-3 bg-navy-200 rounded w-24" />
+                  <div className="h-4 bg-navy-200 rounded w-full" />
                 </div>
               </div>
             ))}
           </div>
         ) : comments.length === 0 ? (
-          <p className="text-center text-sm text-gray-400 py-6">No comments yet. Start the conversation!</p>
+          <p className="text-center text-sm text-navy-400 py-6">No comments yet. Start the conversation!</p>
         ) : (
           <div className="space-y-5">
             {comments.map((c) => (
@@ -559,11 +559,11 @@ const TaskDetailPage = () => {
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
-                    <p className="text-sm font-semibold text-gray-900">{c.author?.name}</p>
-                    <span className="text-xs text-gray-400 capitalize bg-gray-100 px-2 py-0.5 rounded-full">
+                    <p className="text-sm font-semibold text-navy">{c.author?.name}</p>
+                    <span className="text-xs text-navy-400 capitalize bg-navy-100 px-2 py-0.5 rounded-full">
                       {c.author?.role?.replace('_', ' ')}
                     </span>
-                    <p className="text-xs text-gray-400">{timeAgo(c.createdAt)}</p>
+                    <p className="text-xs text-navy-400">{timeAgo(c.createdAt)}</p>
                     {c.author?._id === user?._id && (
                       <button onClick={() => handleDeleteComment(c._id)}
                         className="ml-auto text-xs text-red-400 hover:text-red-600 transition-colors">
@@ -571,7 +571,7 @@ const TaskDetailPage = () => {
                       </button>
                     )}
                   </div>
-                  <p className="text-sm text-gray-700 leading-relaxed">{c.content}</p>
+                  <p className="text-sm text-navy-700 leading-relaxed">{c.content}</p>
                 </div>
               </div>
             ))}

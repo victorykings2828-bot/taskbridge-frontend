@@ -3,7 +3,7 @@ const Skeleton = ({ className = '' }) => (
 );
 
 export const CardSkeleton = () => (
-  <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+  <div className="bg-surface rounded-xl p-6 shadow-card border border-navy-200">
     <Skeleton className="h-4 w-24 mb-3" />
     <Skeleton className="h-8 w-16 mb-2" />
     <Skeleton className="h-3 w-32" />
@@ -11,7 +11,7 @@ export const CardSkeleton = () => (
 );
 
 export const TaskRowSkeleton = () => (
-  <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex items-center gap-4">
+  <div className="bg-surface rounded-xl p-4 shadow-card border border-navy-200 flex items-center gap-4">
     <Skeleton className="h-10 w-10 rounded-full" />
     <div className="flex-1">
       <Skeleton className="h-4 w-48 mb-2" />

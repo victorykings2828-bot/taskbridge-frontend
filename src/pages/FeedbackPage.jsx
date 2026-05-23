@@ -13,7 +13,7 @@ const StarRating = ({ value, onChange, readonly = false }) => (
         key={star}
         type="button"
         onClick={() => !readonly && onChange && onChange(star)}
-        className={`text-2xl transition-transform ${readonly ? 'cursor-default' : 'hover:scale-110 cursor-pointer'} ${star <= value ? 'text-amber-400' : 'text-gray-300'}`}
+        className={`text-2xl transition-transform ${readonly ? 'cursor-default' : 'hover:scale-110 cursor-pointer'} ${star <= value ? 'text-amber-400' : 'text-navy-200'}`}
       >
         ★
       </button>
@@ -31,7 +31,7 @@ const FeedbackPage = () => {
   const [rating, setRating]               = useState(0);
   const [comment, setComment]             = useState('');
   const [submitting, setSubmitting]       = useState(false);
-  const [tab, setTab]                     = useState('received'); // received | given | give
+  const [tab, setTab]                     = useState('received');
 
   const isManager  = user?.role === 'manager';
   const isEmployee = user?.role === 'employee';
@@ -73,7 +73,6 @@ const FeedbackPage = () => {
     } finally { setSubmitting(false); }
   };
 
-  // Tasks eligible to give feedback on
   const pendingFeedbackTasks = completedTasks.filter((task) => {
     const alreadyGiven = feedbacks.some(
       (fb) => fb.task?._id === task._id && fb.givenBy?._id === user?._id
@@ -94,7 +93,7 @@ const FeedbackPage = () => {
     const person = tab === 'received' ? fb.givenBy : fb.givenTo;
     const color  = generateAvatarColor(person?.name || '');
     return (
-      <div className="bg-white rounded-xl border border-gray-100 p-5 hover:shadow-sm transition-shadow">
+      <div className="bg-surface rounded-xl border border-navy-200 p-5 hover:shadow-card transition-shadow">
         <div className="flex items-start justify-between gap-3 mb-3">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0"
@@ -102,20 +101,20 @@ const FeedbackPage = () => {
               {getInitials(person?.name || '?')}
             </div>
             <div>
-              <p className="text-sm font-semibold text-gray-900">{person?.name}</p>
-              <p className="text-xs text-gray-400 capitalize">{person?.role?.replace('_', ' ')}</p>
+              <p className="text-sm font-semibold text-navy">{person?.name}</p>
+              <p className="text-xs text-navy-400 capitalize">{person?.role?.replace('_', ' ')}</p>
             </div>
           </div>
           <StarRating value={fb.rating} readonly />
         </div>
         {fb.task && (
           <Link to={`/tasks/${fb.task._id}`}
-            className="text-xs text-blue-600 hover:underline font-medium block mb-2">
+            className="text-xs text-brand hover:underline font-medium block mb-2">
             📋 {fb.task.title}
           </Link>
         )}
-        {fb.comment && <p className="text-sm text-gray-600 italic">"{fb.comment}"</p>}
-        <p className="text-xs text-gray-400 mt-2">{formatDate(fb.createdAt)}</p>
+        {fb.comment && <p className="text-sm text-navy-600 italic">"{fb.comment}"</p>}
+        <p className="text-xs text-navy-400 mt-2">{formatDate(fb.createdAt)}</p>
       </div>
     );
   };
@@ -124,8 +123,8 @@ const FeedbackPage = () => {
     <div className="animate-fade-in">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Feedback</h1>
-        <p className="text-gray-500 mt-1">
+        <h1 className="text-2xl font-bold text-navy">Feedback</h1>
+        <p className="text-navy-500 mt-1">
           {isManager ? 'Rate your employees and see feedback on task clarity' : 'See your ratings and give feedback on task clarity'}
         </p>
       </div>
@@ -133,17 +132,17 @@ const FeedbackPage = () => {
       {/* Stats row */}
       {avgRating && (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-            <p className="text-sm text-gray-500 mb-1">Average Rating</p>
+          <div className="bg-surface rounded-2xl border border-navy-200 shadow-card p-6">
+            <p className="text-sm text-navy-500 mb-1">Average Rating</p>
             <p className="text-3xl font-bold text-amber-500">{avgRating} <span className="text-amber-400">★</span></p>
-            <p className="text-xs text-gray-400 mt-1">From {receivedFeedbacks.length} review{receivedFeedbacks.length !== 1 ? 's' : ''}</p>
+            <p className="text-xs text-navy-400 mt-1">From {receivedFeedbacks.length} review{receivedFeedbacks.length !== 1 ? 's' : ''}</p>
           </div>
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-            <p className="text-sm text-gray-500 mb-1">Feedback Given</p>
+          <div className="bg-surface rounded-2xl border border-navy-200 shadow-card p-6">
+            <p className="text-sm text-navy-500 mb-1">Feedback Given</p>
             <p className="text-3xl font-bold text-blue-600">{givenFeedbacks.length}</p>
           </div>
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-            <p className="text-sm text-gray-500 mb-1">Pending to Give</p>
+          <div className="bg-surface rounded-2xl border border-navy-200 shadow-card p-6">
+            <p className="text-sm text-navy-500 mb-1">Pending to Give</p>
             <p className="text-3xl font-bold text-green-600">{pendingFeedbackTasks.length}</p>
           </div>
         </div>
@@ -153,7 +152,7 @@ const FeedbackPage = () => {
       <div className="flex gap-2 mb-6 flex-wrap">
         {['received', 'given', 'give'].map((t) => (
           <button key={t} onClick={() => setTab(t)}
-            className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${tab === t ? 'bg-primary text-white' : 'text-gray-600 hover:bg-gray-100'}`}>
+            className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${tab === t ? 'bg-primary text-white shadow-card' : 'text-navy-600 hover:bg-surface-2'}`}>
             {t === 'received' ? `Received (${receivedFeedbacks.length})`
               : t === 'given' ? `Given (${givenFeedbacks.length})`
               : `Give Feedback (${pendingFeedbackTasks.length})`}
@@ -165,9 +164,9 @@ const FeedbackPage = () => {
         <div className="space-y-3"><TableSkeleton rows={4} /></div>
       ) : tab === 'received' ? (
         receivedFeedbacks.length === 0 ? (
-          <div className="text-center py-16 bg-white rounded-2xl border border-gray-100">
+          <div className="text-center py-16 bg-surface rounded-2xl border border-navy-200">
             <div className="text-5xl mb-3">⭐</div>
-            <p className="text-gray-500">No feedback received yet</p>
+            <p className="text-navy-500">No feedback received yet</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -176,9 +175,9 @@ const FeedbackPage = () => {
         )
       ) : tab === 'given' ? (
         givenFeedbacks.length === 0 ? (
-          <div className="text-center py-16 bg-white rounded-2xl border border-gray-100">
+          <div className="text-center py-16 bg-surface rounded-2xl border border-navy-200">
             <div className="text-5xl mb-3">💬</div>
-            <p className="text-gray-500">You haven't given any feedback yet</p>
+            <p className="text-navy-500">You haven't given any feedback yet</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -186,12 +185,11 @@ const FeedbackPage = () => {
           </div>
         )
       ) : (
-        // Give Feedback tab
         pendingFeedbackTasks.length === 0 ? (
-          <div className="text-center py-16 bg-white rounded-2xl border border-gray-100">
+          <div className="text-center py-16 bg-surface rounded-2xl border border-navy-200">
             <div className="text-5xl mb-3">✅</div>
-            <p className="text-gray-500 font-medium">All caught up!</p>
-            <p className="text-gray-400 text-sm mt-1">No completed tasks waiting for feedback</p>
+            <p className="text-navy-500 font-medium">All caught up!</p>
+            <p className="text-navy-400 text-sm mt-1">No completed tasks waiting for feedback</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -199,14 +197,14 @@ const FeedbackPage = () => {
               const person = isManager ? task.assignedTo : task.assignedBy;
               const color  = generateAvatarColor(person?.name || '');
               return (
-                <div key={task._id} className="bg-white rounded-xl border border-gray-100 p-4 flex items-center gap-4 hover:shadow-sm transition-shadow">
+                <div key={task._id} className="bg-surface rounded-xl border border-navy-200 p-4 flex items-center gap-4 hover:shadow-card transition-shadow">
                   <div className="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0"
                     style={{ backgroundColor: color }}>
                     {getInitials(person?.name || '?')}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-gray-900 truncate">{task.title}</p>
-                    <p className="text-xs text-gray-400">
+                    <p className="text-sm font-semibold text-navy truncate">{task.title}</p>
+                    <p className="text-xs text-navy-400">
                       {isManager ? `Assigned to ${person?.name}` : `Assigned by ${person?.name}`} · Completed {formatDate(task.completedAt)}
                     </p>
                   </div>
@@ -225,19 +223,19 @@ const FeedbackPage = () => {
       {showModal && selectedTask && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowModal(false)} />
-          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md p-8 animate-fade-in">
-            <h2 className="text-xl font-bold text-gray-900 mb-1">
+          <div className="relative bg-surface rounded-2xl shadow-2xl w-full max-w-md p-8 animate-fade-in">
+            <h2 className="text-xl font-bold text-navy mb-1">
               {isManager ? 'Rate Employee Work' : 'Rate Task Clarity'}
             </h2>
-            <p className="text-gray-500 text-sm mb-2">Task: <strong>{selectedTask.title}</strong></p>
-            <p className="text-gray-400 text-xs mb-6">
+            <p className="text-navy-500 text-sm mb-2">Task: <strong>{selectedTask.title}</strong></p>
+            <p className="text-navy-400 text-xs mb-6">
               {isManager
                 ? 'How well did the employee perform on this task?'
                 : 'How clear and well-defined was this task?'}
             </p>
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Rating *</label>
+                <label className="block text-sm font-medium text-navy-700 mb-2">Rating *</label>
                 <StarRating value={rating} onChange={setRating} />
                 {rating > 0 && (
                   <p className="text-xs text-amber-600 mt-1">
@@ -246,15 +244,15 @@ const FeedbackPage = () => {
                 )}
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Comment (optional)</label>
+                <label className="block text-sm font-medium text-navy-700 mb-1.5">Comment (optional)</label>
                 <textarea rows={3} value={comment} onChange={(e) => setComment(e.target.value)}
                   placeholder="Share your thoughts..."
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm outline-none focus:border-blue-500 resize-none focus:bg-white transition-all"
+                  className="w-full px-4 py-3 rounded-xl border border-navy-200 bg-surface-2 text-sm outline-none focus:border-brand resize-none focus:bg-surface transition-all"
                 />
               </div>
               <div className="flex gap-3">
                 <button type="button" onClick={() => setShowModal(false)}
-                  className="flex-1 py-3 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50">
+                  className="flex-1 py-3 rounded-xl border border-navy-200 text-sm font-medium text-navy-600 hover:bg-surface-2">
                   Cancel
                 </button>
                 <button type="submit" disabled={submitting || rating === 0}

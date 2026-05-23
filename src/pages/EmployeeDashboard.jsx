@@ -60,10 +60,10 @@ const EmployeeDashboard = () => {
     <div className="animate-fade-in">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">
+        <h1 className="text-2xl font-bold text-navy">
           Good {getGreeting()}, {user?.name?.split(' ')[0]} 👋
         </h1>
-        <p className="text-gray-500 mt-1">Here's your work summary for today</p>
+        <p className="text-navy-500 mt-1">Here's your work summary for today</p>
       </div>
 
       {/* Stats */}
@@ -72,7 +72,7 @@ const EmployeeDashboard = () => {
           [1, 2, 3, 4].map((i) => <CardSkeleton key={i} />)
         ) : (
           <>
-            <StatCard label="Total Tasks"   value={stats?.totalTasks}       icon="📋" colorClass="text-gray-700"  bgClass="bg-gray-100" />
+            <StatCard label="Total Tasks"   value={stats?.totalTasks}       icon="📋" colorClass="text-navy-700"  bgClass="bg-navy-100" />
             <StatCard label="In Progress"   value={stats?.inProgressTasks}  icon="⚡" colorClass="text-blue-700"  bgClass="bg-blue-50" />
             <StatCard label="Completed"     value={stats?.completedTasks}   icon="✅" colorClass="text-green-700" bgClass="bg-green-50" />
             <StatCard label="Overdue"       value={stats?.overdueTasks}     icon="🚨" colorClass="text-red-700"   bgClass="bg-red-50" />
@@ -82,29 +82,29 @@ const EmployeeDashboard = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* New / Pending Tasks */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+        <div className="bg-surface rounded-2xl shadow-card border border-navy-200 p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-base font-semibold text-gray-900">New Tasks</h2>
-            <span className="text-xs bg-blue-100 text-blue-600 font-semibold px-2.5 py-1 rounded-full">
+            <h2 className="text-base font-semibold text-navy">New Tasks</h2>
+            <span className="text-xs bg-brand-100 text-brand font-semibold px-2.5 py-1 rounded-full">
               {pendingTasks.length}
             </span>
           </div>
 
           {loading ? <TableSkeleton rows={3} /> : pendingTasks.length === 0 ? (
             <div className="text-center py-8">
-              <p className="text-gray-400 text-sm">🎉 No new tasks</p>
+              <p className="text-navy-400 text-sm">🎉 No new tasks</p>
             </div>
           ) : (
             <div className="space-y-3">
               {pendingTasks.map((task) => (
-                <div key={task._id} className="p-3 rounded-xl border border-gray-100 hover:border-blue-200 transition-colors">
+                <div key={task._id} className="p-3 rounded-xl border border-navy-200 hover:border-brand transition-colors">
                   <div className="flex items-start justify-between gap-2 mb-2">
-                    <Link to={`/tasks/${task._id}`} className="text-sm font-medium text-gray-900 hover:text-primary truncate">
+                    <Link to={`/tasks/${task._id}`} className="text-sm font-medium text-navy hover:text-brand truncate">
                       {task.title}
                     </Link>
                     <PriorityBadge priority={task.priority} />
                   </div>
-                  <p className="text-xs text-gray-400 mb-3">Due {formatDate(task.deadline)}</p>
+                  <p className="text-xs text-navy-400 mb-3">Due {formatDate(task.deadline)}</p>
                   <button
                     onClick={() => handleAccept(task._id)}
                     disabled={actionLoading === task._id}
@@ -119,15 +119,15 @@ const EmployeeDashboard = () => {
         </div>
 
         {/* Active Tasks */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+        <div className="bg-surface rounded-2xl shadow-card border border-navy-200 p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-base font-semibold text-gray-900">Active Tasks</h2>
-            <Link to="/tasks" className="text-xs text-blue-600 font-medium hover:underline">View all →</Link>
+            <h2 className="text-base font-semibold text-navy">Active Tasks</h2>
+            <Link to="/tasks" className="text-xs text-brand font-medium hover:underline">View all →</Link>
           </div>
 
           {loading ? <TableSkeleton rows={3} /> : activeTasks.length === 0 ? (
             <div className="text-center py-8">
-              <p className="text-gray-400 text-sm">No active tasks right now</p>
+              <p className="text-navy-400 text-sm">No active tasks right now</p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -135,14 +135,14 @@ const EmployeeDashboard = () => {
                 <Link
                   key={task._id}
                   to={`/tasks/${task._id}`}
-                  className="block p-3 rounded-xl border border-gray-100 hover:border-blue-200 transition-colors group"
+                  className="block p-3 rounded-xl border border-navy-200 hover:border-brand transition-colors group"
                 >
                   <div className="flex items-start justify-between gap-2 mb-1">
-                    <p className="text-sm font-medium text-gray-900 group-hover:text-primary truncate">{task.title}</p>
+                    <p className="text-sm font-medium text-navy group-hover:text-brand truncate">{task.title}</p>
                     <StatusBadge status={task.status} />
                   </div>
                   <div className="flex items-center justify-between">
-                    <p className="text-xs text-gray-400">Due {formatDate(task.deadline)}</p>
+                    <p className="text-xs text-navy-400">Due {formatDate(task.deadline)}</p>
                     <PriorityBadge priority={task.priority} />
                   </div>
                 </Link>
@@ -163,7 +163,7 @@ const EmployeeDashboard = () => {
                 to={`/tasks/${task._id}`}
                 className="flex items-center justify-between p-3 bg-white rounded-xl border border-amber-100 hover:border-amber-300 transition-colors"
               >
-                <p className="text-sm font-medium text-gray-900">{task.title}</p>
+                <p className="text-sm font-medium text-navy">{task.title}</p>
                 <p className="text-xs text-amber-600">Submitted {formatDate(task.submittedAt)}</p>
               </Link>
             ))}

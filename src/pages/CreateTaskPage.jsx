@@ -34,14 +34,12 @@ const CreateTaskPage = () => {
       const res    = await api.post('/tasks', form);
       const taskId = res.data.task._id;
 
-      // Upload attachment if one was chosen
       if (attachedFile) {
         const fd = new FormData();
         fd.append('file', attachedFile);
         try {
           await api.post(`/tasks/${taskId}/upload`, fd, { headers: { 'Content-Type': 'multipart/form-data' } });
         } catch {
-          // File upload failure doesn't block task creation
           toast('Task created but file upload failed. You can try again from the task page.', { icon: '⚠️' });
         }
       }
@@ -54,23 +52,23 @@ const CreateTaskPage = () => {
   };
 
   const inputClass = (field) =>
-    `w-full px-4 py-3 rounded-xl border text-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all ${
-      errors[field] ? 'border-red-400 bg-red-50' : 'border-gray-200 bg-gray-50 focus:bg-white'
+    `w-full px-4 py-3 rounded-xl border text-sm outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-all ${
+      errors[field] ? 'border-red-400 bg-red-50' : 'border-navy-200 bg-surface-2 focus:bg-surface'
     }`;
 
   return (
     <div className="animate-fade-in max-w-2xl">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Assign New Task</h1>
-        <p className="text-gray-500 mt-1">Create and assign a task to one of your team members</p>
+        <h1 className="text-2xl font-bold text-navy">Assign New Task</h1>
+        <p className="text-navy-500 mt-1">Create and assign a task to one of your team members</p>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+      <div className="bg-surface rounded-2xl shadow-card border border-navy-200 p-8">
         <form onSubmit={handleSubmit} noValidate className="space-y-5">
 
           {/* Title */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Task Title *</label>
+            <label className="block text-sm font-medium text-navy-700 mb-1.5">Task Title *</label>
             <input type="text" value={form.title} placeholder="E.g., Prepare Q4 sales report"
               onChange={(e) => { setForm({ ...form, title: e.target.value }); setErrors({ ...errors, title: '' }); }}
               className={inputClass('title')} />
@@ -79,7 +77,7 @@ const CreateTaskPage = () => {
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Description *</label>
+            <label className="block text-sm font-medium text-navy-700 mb-1.5">Description *</label>
             <textarea rows={4} value={form.description}
               placeholder="Describe the task, expected deliverables, and any requirements..."
               onChange={(e) => { setForm({ ...form, description: e.target.value }); setErrors({ ...errors, description: '' }); }}
@@ -90,16 +88,16 @@ const CreateTaskPage = () => {
           {/* Priority + Deadline */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Priority</label>
+              <label className="block text-sm font-medium text-navy-700 mb-1.5">Priority</label>
               <select value={form.priority} onChange={(e) => setForm({ ...form, priority: e.target.value })}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm outline-none focus:border-blue-500">
+                className="w-full px-4 py-3 rounded-xl border border-navy-200 bg-surface-2 text-sm outline-none focus:border-brand">
                 <option value="high">🔴 High</option>
                 <option value="medium">🟡 Medium</option>
                 <option value="low">🟢 Low</option>
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Deadline *</label>
+              <label className="block text-sm font-medium text-navy-700 mb-1.5">Deadline *</label>
               <input type="date" value={form.deadline}
                 min={new Date().toISOString().split('T')[0]}
                 onChange={(e) => { setForm({ ...form, deadline: e.target.value }); setErrors({ ...errors, deadline: '' }); }}
@@ -110,7 +108,7 @@ const CreateTaskPage = () => {
 
           {/* Assign to */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Assign to *</label>
+            <label className="block text-sm font-medium text-navy-700 mb-1.5">Assign to *</label>
             <select value={form.assignedTo}
               onChange={(e) => { setForm({ ...form, assignedTo: e.target.value }); setErrors({ ...errors, assignedTo: '' }); }}
               className={inputClass('assignedTo')}>
@@ -129,10 +127,10 @@ const CreateTaskPage = () => {
 
           {/* File attachment */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Attach a File (optional)</label>
-            <label className="flex items-center gap-3 px-4 py-3 rounded-xl border border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 cursor-pointer transition-all">
+            <label className="block text-sm font-medium text-navy-700 mb-1.5">Attach a File (optional)</label>
+            <label className="flex items-center gap-3 px-4 py-3 rounded-xl border border-dashed border-navy-200 bg-surface-2 hover:bg-navy-100 cursor-pointer transition-all">
               <span className="text-xl">📎</span>
-              <span className="text-sm text-gray-500 flex-1">
+              <span className="text-sm text-navy-500 flex-1">
                 {attachedFile ? attachedFile.name : 'Click to attach a file (PDF, Word, Excel, Image — max 10MB)'}
               </span>
               {attachedFile && (
@@ -143,7 +141,7 @@ const CreateTaskPage = () => {
                 accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png,.txt,.zip"
                 onChange={(e) => setAttachedFile(e.target.files[0] || null)} />
             </label>
-            <p className="text-xs text-gray-400 mt-1">
+            <p className="text-xs text-navy-400 mt-1">
               {attachedFile
                 ? `✅ ${(attachedFile.size / 1024 / 1024).toFixed(2)} MB`
                 : 'Supported: PDF, Word, Excel, Images, ZIP'}
@@ -153,7 +151,7 @@ const CreateTaskPage = () => {
           {/* Buttons */}
           <div className="flex gap-3 pt-2">
             <button type="button" onClick={() => navigate(-1)}
-              className="flex-1 py-3 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-all">
+              className="flex-1 py-3 rounded-xl border border-navy-200 text-sm font-medium text-navy-600 hover:bg-surface-2 transition-all">
               Cancel
             </button>
             <button type="submit" disabled={submitting}

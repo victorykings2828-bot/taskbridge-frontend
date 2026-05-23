@@ -43,15 +43,15 @@ const TasksPage = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="text-2xl font-bold text-navy">
             {user?.role === 'employee' ? 'My Tasks' : 'All Tasks'}
           </h1>
-          <p className="text-gray-500 mt-1">{filtered.length} task{filtered.length !== 1 ? 's' : ''} found</p>
+          <p className="text-navy-500 mt-1">{filtered.length} task{filtered.length !== 1 ? 's' : ''} found</p>
         </div>
         {user?.role === 'manager' && (
           <Link
             to="/tasks/create"
-            className="inline-flex items-center gap-2 bg-primary hover:bg-primary-light text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-all shadow-md"
+            className="inline-flex items-center gap-2 bg-primary hover:bg-primary-light text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-all shadow-card"
           >
             <span className="text-lg leading-none">+</span> Assign Task
           </Link>
@@ -65,19 +65,19 @@ const TasksPage = () => {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search tasks..."
-          className="flex-1 sm:max-w-xs px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+          className="flex-1 sm:max-w-xs px-4 py-2.5 rounded-xl border border-navy-200 bg-surface text-sm outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand"
         />
         <select
           value={statusFilter}
           onChange={(e) => setStatus(e.target.value)}
-          className="px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm outline-none focus:border-blue-500 text-gray-700"
+          className="px-4 py-2.5 rounded-xl border border-navy-200 bg-surface text-sm outline-none focus:border-brand text-navy-700"
         >
           {STATUS_FILTERS.map((s) => <option key={s} value={s}>{label(s)}</option>)}
         </select>
         <select
           value={priorityFilter}
           onChange={(e) => setPriority(e.target.value)}
-          className="px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm outline-none focus:border-blue-500 text-gray-700"
+          className="px-4 py-2.5 rounded-xl border border-navy-200 bg-surface text-sm outline-none focus:border-brand text-navy-700"
         >
           <option value="all">All Priorities</option>
           <option value="high">High</option>
@@ -87,15 +87,15 @@ const TasksPage = () => {
       </div>
 
       {/* Task List */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="bg-surface rounded-2xl shadow-card border border-navy-200 overflow-hidden">
         {loading ? (
           <div className="p-6"><TableSkeleton rows={8} /></div>
         ) : filtered.length === 0 ? (
           <div className="text-center py-16">
             <div className="text-5xl mb-3">📋</div>
-            <p className="text-gray-500 font-medium">No tasks found</p>
+            <p className="text-navy-500 font-medium">No tasks found</p>
             {user?.role === 'manager' && (
-              <Link to="/tasks/create" className="mt-3 inline-block text-sm text-blue-600 font-medium hover:underline">
+              <Link to="/tasks/create" className="mt-3 inline-block text-sm text-brand font-medium hover:underline">
                 Assign your first task →
               </Link>
             )}
@@ -104,26 +104,26 @@ const TasksPage = () => {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-gray-100 bg-gray-50">
-                  <th className="text-left text-xs font-semibold text-gray-500 px-6 py-3">Task</th>
+                <tr className="border-b border-navy-200 bg-surface-2">
+                  <th className="text-left text-xs font-semibold text-navy-500 px-6 py-3">Task</th>
                   {user?.role !== 'employee' && (
-                    <th className="text-left text-xs font-semibold text-gray-500 px-6 py-3 hidden sm:table-cell">Assignee</th>
+                    <th className="text-left text-xs font-semibold text-navy-500 px-6 py-3 hidden sm:table-cell">Assignee</th>
                   )}
-                  <th className="text-left text-xs font-semibold text-gray-500 px-6 py-3">Priority</th>
-                  <th className="text-left text-xs font-semibold text-gray-500 px-6 py-3">Status</th>
-                  <th className="text-left text-xs font-semibold text-gray-500 px-6 py-3 hidden md:table-cell">Deadline</th>
-                  <th className="text-left text-xs font-semibold text-gray-500 px-6 py-3">Action</th>
+                  <th className="text-left text-xs font-semibold text-navy-500 px-6 py-3">Priority</th>
+                  <th className="text-left text-xs font-semibold text-navy-500 px-6 py-3">Status</th>
+                  <th className="text-left text-xs font-semibold text-navy-500 px-6 py-3 hidden md:table-cell">Deadline</th>
+                  <th className="text-left text-xs font-semibold text-navy-500 px-6 py-3">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-50">
+              <tbody className="divide-y divide-navy-200/40">
                 {filtered.map((task) => {
                   const assignee = task.assignedTo;
                   const color = generateAvatarColor(assignee?.name || '');
                   return (
-                    <tr key={task._id} className="hover:bg-gray-50 transition-colors">
+                    <tr key={task._id} className="hover:bg-surface-2 transition-colors">
                       <td className="px-6 py-4 max-w-xs">
-                        <p className="text-sm font-medium text-gray-900 truncate">{task.title}</p>
-                        <p className="text-xs text-gray-400 truncate mt-0.5">{task.description?.slice(0, 60)}...</p>
+                        <p className="text-sm font-medium text-navy truncate">{task.title}</p>
+                        <p className="text-xs text-navy-400 truncate mt-0.5">{task.description?.slice(0, 60)}...</p>
                       </td>
                       {user?.role !== 'employee' && (
                         <td className="px-6 py-4 hidden sm:table-cell">
@@ -131,7 +131,7 @@ const TasksPage = () => {
                             <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0" style={{ backgroundColor: color }}>
                               {getInitials(assignee?.name || '')}
                             </div>
-                            <p className="text-sm text-gray-600 truncate">{assignee?.name}</p>
+                            <p className="text-sm text-navy-600 truncate">{assignee?.name}</p>
                           </div>
                         </td>
                       )}
@@ -142,14 +142,14 @@ const TasksPage = () => {
                         <StatusBadge status={task.status} />
                       </td>
                       <td className="px-6 py-4 hidden md:table-cell">
-                        <p className={`text-sm ${task.status === 'overdue' ? 'text-red-600 font-medium' : 'text-gray-500'}`}>
+                        <p className={`text-sm ${task.status === 'overdue' ? 'text-red-600 font-medium' : 'text-navy-500'}`}>
                           {formatDate(task.deadline)}
                         </p>
                       </td>
                       <td className="px-6 py-4">
                         <Link
                           to={`/tasks/${task._id}`}
-                          className="text-xs font-medium text-blue-600 hover:text-blue-700 border border-blue-200 hover:bg-blue-50 px-3 py-1.5 rounded-lg transition-all"
+                          className="text-xs font-medium text-brand hover:text-brand-dark border border-brand/30 hover:bg-brand-50 px-3 py-1.5 rounded-lg transition-all"
                         >
                           View
                         </Link>
