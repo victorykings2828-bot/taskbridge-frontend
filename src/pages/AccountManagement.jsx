@@ -8,26 +8,38 @@ import toast from 'react-hot-toast';
 const AccountManagement = () => {
   const { user } = useAuth();
   const [users, setUsers]           = useState([]);
+  const [managers, setManagers]     = useState([]);
   const [loading, setLoading]       = useState(true);
   const [showModal, setShowModal]   = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [form, setForm]             = useState({ name: '', email: '', department: '', phone: '' });
+  const [form, setForm]             = useState({ name: '', email: '', department: '', phone: '', managerId: '' });
   const [errors, setErrors]         = useState({});
   const [search, setSearch]         = useState('');
   const [createdUser, setCreatedUser] = useState(null);
 
-  const targetRole = user?.role === 'super_admin' ? 'manager' : 'employee';
+  // Super admin can toggle between manager/employee view; manager always sees employees
+  const [targetRole, setTargetRole] = useState(user?.role === 'super_admin' ? 'manager' : 'employee');
 
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const res = await api.get('/users');
+      const url = user?.role === 'super_admin' ? `/users?role=${targetRole}` : '/users';
+      const res = await api.get(url);
       setUsers(res.data.users || []);
     } catch { toast.error('Failed to load users'); }
     finally { setLoading(false); }
   };
 
-  useEffect(() => { fetchUsers(); }, []);
+  const fetchManagers = async () => {
+    if (user?.role !== 'super_admin') return;
+    try {
+      const res = await api.get('/users?role=manager');
+      setManagers(res.data.users?.filter(u => u.isActive) || []);
+    } catch { /* ignore */ }
+  };
+
+  useEffect(() => { fetchUsers(); }, [targetRole]);
+  useEffect(() => { fetchManagers(); }, []);
 
   const validate = () => {
     const e = {};
@@ -52,10 +64,14 @@ const AccountManagement = () => {
     if (!validate()) return;
     setSubmitting(true);
     try {
-      const res = await api.post('/users', { ...form, role: targetRole });
+      const payload = { ...form, role: targetRole };
+      if (targetRole === 'employee' && form.managerId) {
+        payload.managerId = form.managerId;
+      }
+      const res = await api.post('/users', payload);
       showTempPassword(res.data.user.name, res.data.user.email, res.data.tempPassword);
       setShowModal(false);
-      setForm({ name: '', email: '', department: '', phone: '' });
+      setForm({ name: '', email: '', department: '', phone: '', managerId: '' });
       fetchUsers();
     } catch (err) {
       toast.error(err.response?.data?.message || 'Failed to create user');
@@ -91,17 +107,33 @@ const AccountManagement = () => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">
-            {user?.role === 'super_admin' ? 'Manager Accounts' : 'My Team'}
+            {user?.role === 'super_admin'
+              ? (targetRole === 'manager' ? 'Manager Accounts' : 'Employee Accounts')
+              : 'My Team'}
           </h1>
           <p className="text-gray-500 mt-1">Manage {ROLE_LABELS[targetRole].toLowerCase()} accounts</p>
         </div>
-        <button
-          onClick={() => setShowModal(true)}
-          className="inline-flex items-center gap-2 bg-primary hover:bg-primary-light text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-all shadow-md"
-        >
-          <span className="text-lg leading-none">+</span>
-          Add {ROLE_LABELS[targetRole]}
-        </button>
+        <div className="flex items-center gap-3">
+          {user?.role === 'super_admin' && (
+            <div className="flex bg-gray-100 rounded-xl p-1">
+              <button
+                onClick={() => setTargetRole('manager')}
+                className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${targetRole === 'manager' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+              >Managers</button>
+              <button
+                onClick={() => setTargetRole('employee')}
+                className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${targetRole === 'employee' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+              >Employees</button>
+            </div>
+          )}
+          <button
+            onClick={() => setShowModal(true)}
+            className="inline-flex items-center gap-2 bg-primary hover:bg-primary-light text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-all shadow-md"
+          >
+            <span className="text-lg leading-none">+</span>
+            Add {ROLE_LABELS[targetRole]}
+          </button>
+        </div>
       </div>
 
       {/* Temp Password Banner */}
@@ -273,6 +305,27 @@ const AccountManagement = () => {
                   {errors[field] && <p className="text-red-500 text-xs mt-1">⚠ {errors[field]}</p>}
                 </div>
               ))}
+
+              {/* Manager assignment dropdown — only when super_admin creates an employee */}
+              {user?.role === 'super_admin' && targetRole === 'employee' && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Assign to Manager</label>
+                  <select
+                    value={form.managerId}
+                    onChange={(e) => setForm({ ...form, managerId: e.target.value })}
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white transition-all"
+                  >
+                    <option value="">— Unassigned (assign later) —</option>
+                    {managers.map(m => (
+                      <option key={m._id} value={m._id}>{m.name} ({m.email})</option>
+                    ))}
+                  </select>
+                  {managers.length === 0 && (
+                    <p className="text-amber-500 text-xs mt-1">⚠ No managers found. Create a manager first.</p>
+                  )}
+                </div>
+              )}
+
               <div className="flex gap-3 pt-2">
                 <button type="button" onClick={() => setShowModal(false)}
                   className="flex-1 py-3 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50">
