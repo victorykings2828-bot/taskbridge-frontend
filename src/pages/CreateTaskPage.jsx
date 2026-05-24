@@ -112,16 +112,16 @@ const CreateTaskPage = () => {
             <select value={form.assignedTo}
               onChange={(e) => { setForm({ ...form, assignedTo: e.target.value }); setErrors({ ...errors, assignedTo: '' }); }}
               className={inputClass('assignedTo')}>
-              <option value="">Select employee...</option>
+              <option value="">Select a team member...</option>
               {employees.map((emp) => (
                 <option key={emp._id} value={emp._id}>
-                  {emp.name}{emp.department ? ` (${emp.department})` : ''}
+                  {emp.name}{emp.role === 'manager' ? ' · Manager' : ''}{emp.department ? ` (${emp.department})` : ''}
                 </option>
               ))}
             </select>
             {errors.assignedTo && <p className="text-red-500 text-xs mt-1.5">⚠ {errors.assignedTo}</p>}
             {employees.length === 0 && (
-              <p className="text-amber-600 text-xs mt-1.5">⚠ No employees yet. Add team members first from My Team.</p>
+              <p className="text-amber-600 text-xs mt-1.5">⚠ No team members yet. Create accounts first.</p>
             )}
           </div>
 
