@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../utils/api';
 import StatCard from '../components/common/StatCard';
+import { ClipboardIcon, BoltIcon, CheckCircleIcon, AlertIcon } from '../components/common/icons';
 import { CardSkeleton, TableSkeleton } from '../components/common/Skeleton';
 import { PriorityBadge, StatusBadge } from '../components/common/Badge';
 import { formatDate } from '../utils/helpers';
@@ -72,10 +73,10 @@ const EmployeeDashboard = () => {
           [1, 2, 3, 4].map((i) => <CardSkeleton key={i} />)
         ) : (
           <>
-            <StatCard label="Total Tasks"   value={stats?.totalTasks}       icon="📋" colorClass="text-navy-700"  bgClass="bg-navy-100" />
-            <StatCard label="In Progress"   value={stats?.inProgressTasks}  icon="⚡" colorClass="text-blue-700"  bgClass="bg-blue-50" />
-            <StatCard label="Completed"     value={stats?.completedTasks}   icon="✅" colorClass="text-green-700" bgClass="bg-green-50" />
-            <StatCard label="Overdue"       value={stats?.overdueTasks}     icon="🚨" colorClass="text-red-700"   bgClass="bg-red-50" />
+            <StatCard label="Total Tasks"   value={stats?.totalTasks}       icon={<ClipboardIcon />}   colorClass="text-navy-700"  bgClass="bg-navy-100" />
+            <StatCard label="In Progress"   value={stats?.inProgressTasks}  icon={<BoltIcon />}        colorClass="text-blue-600"  bgClass="bg-blue-50" />
+            <StatCard label="Completed"     value={stats?.completedTasks}   icon={<CheckCircleIcon />} colorClass="text-green-600" bgClass="bg-green-50" />
+            <StatCard label="Overdue"       value={stats?.overdueTasks}     icon={<AlertIcon />}       colorClass="text-red-600"   bgClass="bg-red-50" />
           </>
         )}
       </div>

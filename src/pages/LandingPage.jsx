@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../utils/api';
 import ThemeToggle from '../components/common/ThemeToggle';
+import { TargetIcon, ChartIcon, BellIcon, ClipboardIcon, StarIcon, LockIcon } from '../components/common/icons';
 
 // A pricing card with a collapsible feature list. Collapsed it shows the top
 // features; expanded it reveals the rest plus a "Not included" list so visitors
@@ -93,12 +94,12 @@ const LandingPage = () => {
   }, []);
 
   const features = [
-    { icon: '🎯', title: 'Smart Task Assignment', desc: 'Assign tasks to the right people with priority levels, deadlines, and file attachments — all in one place.' },
-    { icon: '📊', title: 'Real-time Progress', desc: 'Track every task from Not Started to Completed. Get overdue alerts before deadlines become problems.' },
-    { icon: '🔔', title: 'Instant Notifications', desc: 'Everyone stays in the loop automatically. Assignments, reviews, feedback — notified the moment it happens.' },
-    { icon: '📋', title: 'Full Audit Trail', desc: 'Every action logged. Know exactly who did what and when. Complete accountability for your team.' },
-    { icon: '⭐', title: 'Feedback & Ratings', desc: 'Managers and employees rate completed tasks. Build a culture of continuous improvement.' },
-    { icon: '🔒', title: 'Role-based Access', desc: 'Super Admin, Manager, and Employee roles keep the right people in the right places.' },
+    { icon: <TargetIcon size={22} />,     title: 'Smart Task Assignment', desc: 'Assign tasks to the right people with priority levels, deadlines, and file attachments — all in one place.' },
+    { icon: <ChartIcon size={22} />,      title: 'Real-time Progress', desc: 'Track every task from Not Started to Completed. Get overdue alerts before deadlines become problems.' },
+    { icon: <BellIcon size={22} />,       title: 'Instant Notifications', desc: 'Everyone stays in the loop automatically. Assignments, reviews, feedback — notified the moment it happens.' },
+    { icon: <ClipboardIcon size={22} />,  title: 'Full Audit Trail', desc: 'Every action logged. Know exactly who did what and when. Complete accountability for your team.' },
+    { icon: <StarIcon size={22} />,       title: 'Feedback & Ratings', desc: 'Managers and employees rate completed tasks. Build a culture of continuous improvement.' },
+    { icon: <LockIcon size={22} />,       title: 'Role-based Access', desc: 'Super Admin, Manager, and Employee roles keep the right people in the right places.' },
   ];
 
   const steps = [
@@ -242,7 +243,7 @@ const LandingPage = () => {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {features.map((f, i) => (
               <div key={i} className="bg-surface border border-navy-200 rounded-2xl p-6 hover:shadow-card-md hover:border-brand/30 transition-all group">
-                <span className="text-3xl mb-4 block">{f.icon}</span>
+                <div className="w-11 h-11 rounded-xl bg-brand/10 text-brand flex items-center justify-center mb-4 group-hover:bg-brand group-hover:text-white transition-colors">{f.icon}</div>
                 <h3 className="font-semibold text-navy mb-2 group-hover:text-brand transition-colors">{f.title}</h3>
                 <p className="text-navy-500 text-sm leading-relaxed">{f.desc}</p>
               </div>

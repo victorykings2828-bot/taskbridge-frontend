@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../utils/api';
 import StatCard from '../components/common/StatCard';
+import { ClipboardIcon, CheckCircleIcon, ClockIcon, AlertIcon, UsersIcon, SearchIcon } from '../components/common/icons';
 import { CardSkeleton, TableSkeleton } from '../components/common/Skeleton';
 import { PriorityBadge, StatusBadge } from '../components/common/Badge';
 import { formatDate, getInitials, generateAvatarColor } from '../utils/helpers';
@@ -62,10 +63,10 @@ const ManagerDashboard = () => {
           [1, 2, 3, 4].map((i) => <CardSkeleton key={i} />)
         ) : (
           <>
-            <StatCard label="Total Tasks"     value={stats?.totalTasks}     icon="📋" colorClass="text-navy-700"   bgClass="bg-navy-100" />
-            <StatCard label="Completed"       value={stats?.completedTasks} icon="✅" colorClass="text-green-700"  bgClass="bg-green-50" />
-            <StatCard label="Pending"         value={stats?.pendingTasks}   icon="⏳" colorClass="text-blue-700"   bgClass="bg-blue-50" />
-            <StatCard label="Overdue"         value={stats?.overdueTasks}   icon="🚨" colorClass="text-red-700"    bgClass="bg-red-50" />
+            <StatCard label="Total Tasks"     value={stats?.totalTasks}     icon={<ClipboardIcon />}   colorClass="text-navy-700"   bgClass="bg-navy-100" />
+            <StatCard label="Completed"       value={stats?.completedTasks} icon={<CheckCircleIcon />} colorClass="text-green-600"  bgClass="bg-green-50" />
+            <StatCard label="Pending"         value={stats?.pendingTasks}   icon={<ClockIcon />}       colorClass="text-blue-600"   bgClass="bg-blue-50" />
+            <StatCard label="Overdue"         value={stats?.overdueTasks}   icon={<AlertIcon />}       colorClass="text-red-600"    bgClass="bg-red-50" />
           </>
         )}
       </div>
@@ -76,8 +77,8 @@ const ManagerDashboard = () => {
           [1, 2].map((i) => <CardSkeleton key={i} />)
         ) : (
           <>
-            <StatCard label="Team Members"    value={stats?.totalEmployees}   icon="👥" colorClass="text-purple-700" bgClass="bg-purple-50" />
-            <StatCard label="Under Review"    value={stats?.underReviewTasks} icon="🔍" colorClass="text-amber-700"  bgClass="bg-amber-50" />
+            <StatCard label="Team Members"    value={stats?.totalEmployees}   icon={<UsersIcon />}  colorClass="text-info"      bgClass="bg-blue-50" />
+            <StatCard label="Under Review"    value={stats?.underReviewTasks} icon={<SearchIcon />} colorClass="text-amber-600" bgClass="bg-amber-50" />
           </>
         )}
       </div>
@@ -93,7 +94,9 @@ const ManagerDashboard = () => {
           <TableSkeleton rows={5} />
         ) : recentTasks.length === 0 ? (
           <div className="text-center py-12">
-            <div className="text-4xl mb-3">📋</div>
+            <div className="w-12 h-12 rounded-2xl bg-surface-2 text-navy-400 flex items-center justify-center mx-auto mb-3">
+              <ClipboardIcon size={24} />
+            </div>
             <p className="text-navy-500 text-sm">No tasks yet</p>
             <Link to="/tasks/create" className="mt-3 inline-block text-sm text-brand font-medium hover:underline">
               Assign your first task →

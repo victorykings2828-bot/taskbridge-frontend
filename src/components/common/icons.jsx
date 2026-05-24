@@ -1,0 +1,27 @@
+import React from 'react';
+
+// Clean, consistent line icons (inherit color via currentColor).
+const S = ({ children, size = 20 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+    {children}
+  </svg>
+);
+
+export const TasksIcon       = (p) => <S {...p}><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h9"/></S>;
+export const ClipboardIcon   = (p) => <S {...p}><rect x="8" y="3" width="8" height="4" rx="1"/><path d="M9 5H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-3"/><path d="M9 12h6M9 16h4"/></S>;
+export const CheckCircleIcon = (p) => <S {...p}><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/></S>;
+export const ClockIcon       = (p) => <S {...p}><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></S>;
+export const AlertIcon       = (p) => <S {...p}><path d="M10.3 3.8L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.8a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/></S>;
+export const UsersIcon       = (p) => <S {...p}><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></S>;
+export const UserIcon        = (p) => <S {...p}><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></S>;
+export const BriefcaseIcon   = (p) => <S {...p}><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></S>;
+export const SearchIcon      = (p) => <S {...p}><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></S>;
+export const BoltIcon        = (p) => <S {...p}><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/></S>;
+export const TrendingUpIcon  = (p) => <S {...p}><path d="M3 17l6-6 4 4 8-8"/><path d="M17 7h4v4"/></S>;
+export const StarIcon        = (p) => <S {...p}><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.4 6.1 21l1.2-6.5L2.5 9.9l6.6-.9 2.9-6z"/></S>;
+export const DatabaseIcon    = (p) => <S {...p}><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></S>;
+export const ChartIcon       = (p) => <S {...p}><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-6"/></S>;
+export const TargetIcon      = (p) => <S {...p}><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/></S>;
+export const BellIcon        = (p) => <S {...p}><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></S>;
+export const LockIcon        = (p) => <S {...p}><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></S>;

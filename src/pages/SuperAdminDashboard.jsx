@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../utils/api';
 import StatCard from '../components/common/StatCard';
+import { BriefcaseIcon, UserIcon, ClipboardIcon, TrendingUpIcon, BoltIcon, CheckCircleIcon, SearchIcon, AlertIcon } from '../components/common/icons';
 import { CardSkeleton } from '../components/common/Skeleton';
 import { PriorityBadge, StatusBadge } from '../components/common/Badge';
 import { formatDate, timeAgo } from '../utils/helpers';
@@ -53,19 +54,19 @@ const SuperAdminDashboard = () => {
       {/* Stats Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {loading ? [1,2,3,4].map(i => <CardSkeleton key={i} />) : (<>
-          <StatCard label="Total Managers"  value={stats?.totalManagers}  icon="👔" colorClass="text-blue-700"   bgClass="bg-blue-50" />
-          <StatCard label="Total Employees" value={stats?.totalEmployees} icon="👤" colorClass="text-green-700"  bgClass="bg-green-50" />
-          <StatCard label="Total Tasks"     value={stats?.totalTasks}     icon="📋" colorClass="text-purple-700" bgClass="bg-purple-50" />
-          <StatCard label="Completion Rate" value={stats?.completionRate != null ? `${stats.completionRate}%` : '—'} icon="📈" colorClass="text-emerald-700" bgClass="bg-emerald-50" />
+          <StatCard label="Total Managers"  value={stats?.totalManagers}  icon={<BriefcaseIcon />}  colorClass="text-blue-600"   bgClass="bg-blue-50" />
+          <StatCard label="Total Employees" value={stats?.totalEmployees} icon={<UserIcon />}       colorClass="text-green-600"  bgClass="bg-green-50" />
+          <StatCard label="Total Tasks"     value={stats?.totalTasks}     icon={<ClipboardIcon />}  colorClass="text-info"       bgClass="bg-blue-50" />
+          <StatCard label="Completion Rate" value={stats?.completionRate != null ? `${stats.completionRate}%` : '—'} icon={<TrendingUpIcon />} colorClass="text-emerald-600" bgClass="bg-emerald-50" />
         </>)}
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {loading ? [1,2,3,4].map(i => <CardSkeleton key={i} />) : (<>
-          <StatCard label="In Progress"   value={stats?.inProgressTasks}   icon="⚡" colorClass="text-blue-600"  bgClass="bg-blue-50" />
-          <StatCard label="Completed"     value={stats?.completedTasks}    icon="✅" colorClass="text-green-600" bgClass="bg-green-50" />
-          <StatCard label="Under Review"  value={stats?.underReviewTasks}  icon="🔍" colorClass="text-amber-600" bgClass="bg-amber-50" />
-          <StatCard label="Overdue"       value={stats?.overdueTasks}      icon="🚨" colorClass="text-red-600"   bgClass="bg-red-50" />
+          <StatCard label="In Progress"   value={stats?.inProgressTasks}   icon={<BoltIcon />}        colorClass="text-blue-600"  bgClass="bg-blue-50" />
+          <StatCard label="Completed"     value={stats?.completedTasks}    icon={<CheckCircleIcon />} colorClass="text-green-600" bgClass="bg-green-50" />
+          <StatCard label="Under Review"  value={stats?.underReviewTasks}  icon={<SearchIcon />}      colorClass="text-amber-600" bgClass="bg-amber-50" />
+          <StatCard label="Overdue"       value={stats?.overdueTasks}      icon={<AlertIcon />}       colorClass="text-red-600"   bgClass="bg-red-50" />
         </>)}
       </div>
 

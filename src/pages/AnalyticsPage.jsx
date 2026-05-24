@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import api from '../utils/api';
 import { useAuth } from '../context/AuthContext';
+import { ClipboardIcon, CheckCircleIcon, AlertIcon, StarIcon, BriefcaseIcon, UsersIcon, DatabaseIcon } from '../components/common/icons';
+
+const ICON_COLOR = { brand: 'text-brand', success: 'text-success', danger: 'text-danger', warning: 'text-warning', info: 'text-info' };
 
 const STATUS_COLORS = {
   'not_started': '#94A3B8',
@@ -19,9 +22,9 @@ const STATUS_LABELS = {
 };
 
 const StatCard = ({ icon, label, value, sub, color = 'brand' }) => (
-  <div className="bg-surface border border-navy-200 rounded-2xl p-5 shadow-card">
-    <div className={`w-10 h-10 rounded-xl bg-${color}/10 flex items-center justify-center mb-3`}>
-      <span className="text-lg">{icon}</span>
+  <div className="bg-surface border border-navy-200 rounded-2xl p-5 shadow-card hover:shadow-card-md transition-all">
+    <div className={`w-10 h-10 rounded-xl bg-${color}/10 ${ICON_COLOR[color] || 'text-brand'} flex items-center justify-center mb-3`}>
+      {icon}
     </div>
     <p className="text-2xl font-bold text-navy">{value ?? '—'}</p>
     <p className="text-navy-600 text-sm font-medium mt-0.5">{label}</p>
@@ -119,16 +122,16 @@ export default function AnalyticsPage() {
 
       {/* Overview stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <StatCard icon="📋" label="Total tasks"       value={overview.totalTasks}      />
-        <StatCard icon="✅" label="Completed (30d)"   value={overview.completedLast30} sub={`${overview.completionRate}% completion rate`} color="success" />
-        <StatCard icon="⚠️" label="Overdue tasks"     value={overview.overdueCount}    color="danger" />
-        <StatCard icon="⭐" label="Avg feedback"      value={overview.avgRating ? `${overview.avgRating}/5` : 'No ratings'} sub={overview.totalRatings ? `${overview.totalRatings} ratings` : ''} color="warning" />
+        <StatCard icon={<ClipboardIcon />}   label="Total tasks"       value={overview.totalTasks}      />
+        <StatCard icon={<CheckCircleIcon />} label="Completed (30d)"   value={overview.completedLast30} sub={`${overview.completionRate}% completion rate`} color="success" />
+        <StatCard icon={<AlertIcon />}       label="Overdue tasks"     value={overview.overdueCount}    color="danger" />
+        <StatCard icon={<StarIcon />}        label="Avg feedback"      value={overview.avgRating ? `${overview.avgRating}/5` : 'No ratings'} sub={overview.totalRatings ? `${overview.totalRatings} ratings` : ''} color="warning" />
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-        <StatCard icon="👔" label="Managers"          value={overview.totalManagers}   />
-        <StatCard icon="👥" label="Employees"         value={overview.totalEmployees}  />
-        <StatCard icon="💾" label="Storage used"      value={storage?.usedFormatted}   sub={`${storage?.usedPct}% of plan`} color="info" />
+        <StatCard icon={<BriefcaseIcon />} label="Managers"          value={overview.totalManagers}   />
+        <StatCard icon={<UsersIcon />}     label="Employees"         value={overview.totalEmployees}  />
+        <StatCard icon={<DatabaseIcon />}  label="Storage used"      value={storage?.usedFormatted}   sub={`${storage?.usedPct}% of plan`} color="info" />
       </div>
 
       {/* Charts row */}
