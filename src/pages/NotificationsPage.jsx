@@ -1,24 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import api from '../utils/api';
 import { TableSkeleton } from '../components/common/Skeleton';
-import { BellIcon } from '../components/common/icons';
+import { BellIcon, ClipboardIcon, AlertIcon, BoltIcon, SearchIcon, CheckCircleIcon, ClockIcon, ChatIcon, StarIcon, UserIcon } from '../components/common/icons';
 import { timeAgo } from '../utils/helpers';
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
-const NOTIFICATION_ICONS = {
-  task_assigned:     '📋',
-  task_flagged:      '🚩',
-  status_updated:    '🔄',
-  task_submitted:    '📤',
-  task_approved:     '✅',
-  revision_requested:'✏️',
-  extension_approved:'📅',
-  extension_rejected:'❌',
-  new_comment:       '💬',
-  feedback_received: '⭐',
-  account_created:   '👋',
+const NOTIFICATION_META = {
+  task_assigned:      { Icon: ClipboardIcon,   color: 'text-brand',      bg: 'bg-brand/10' },
+  task_flagged:       { Icon: AlertIcon,       color: 'text-orange-600', bg: 'bg-orange-50' },
+  status_updated:     { Icon: BoltIcon,        color: 'text-blue-600',   bg: 'bg-blue-50' },
+  task_submitted:     { Icon: SearchIcon,      color: 'text-amber-600',  bg: 'bg-amber-50' },
+  task_approved:      { Icon: CheckCircleIcon, color: 'text-green-600',  bg: 'bg-green-50' },
+  revision_requested: { Icon: AlertIcon,       color: 'text-amber-600',  bg: 'bg-amber-50' },
+  extension_approved: { Icon: ClockIcon,       color: 'text-green-600',  bg: 'bg-green-50' },
+  extension_rejected: { Icon: AlertIcon,       color: 'text-red-600',    bg: 'bg-red-50' },
+  new_comment:        { Icon: ChatIcon,        color: 'text-brand',      bg: 'bg-brand/10' },
+  feedback_received:  { Icon: StarIcon,        color: 'text-amber-600',  bg: 'bg-amber-50' },
+  account_created:    { Icon: UserIcon,        color: 'text-brand',      bg: 'bg-brand/10' },
 };
+const DEFAULT_META = { Icon: BellIcon, color: 'text-navy-500', bg: 'bg-navy-100' };
 
 const NotificationsPage = () => {
   const [notifications, setNotifications] = useState([]);
@@ -108,15 +109,18 @@ const NotificationsPage = () => {
           </div>
         ) : (
           <div className="divide-y divide-navy-200/40">
-            {displayed.map((notif) => (
+            {displayed.map((notif) => {
+              const meta = NOTIFICATION_META[notif.type] || DEFAULT_META;
+              const Icon = meta.Icon;
+              return (
               <div
                 key={notif._id}
                 className={`flex items-start gap-4 px-6 py-4 hover:bg-surface-2 transition-colors cursor-pointer ${!notif.isRead ? 'bg-brand-50/60' : ''}`}
                 onClick={() => { if (!notif.isRead) markRead(notif._id); }}
               >
                 {/* Icon */}
-                <div className="w-10 h-10 rounded-full bg-navy-100 flex items-center justify-center text-xl flex-shrink-0 mt-0.5">
-                  {NOTIFICATION_ICONS[notif.type] || '🔔'}
+                <div className={`w-10 h-10 rounded-full ${meta.bg} ${meta.color} flex items-center justify-center flex-shrink-0 mt-0.5`}>
+                  <Icon size={18} />
                 </div>
 
                 {/* Content */}
@@ -144,7 +148,8 @@ const NotificationsPage = () => {
                   )}
                 </div>
               </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>

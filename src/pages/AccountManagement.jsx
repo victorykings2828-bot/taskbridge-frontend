@@ -74,16 +74,6 @@ const AccountManagement = () => {
     } finally { setSubmitting(false); }
   };
 
-  const handleResetPassword = async (u) => {
-    if (!window.confirm(`Reset password for ${u.name}? Their current password will be cleared and they'll set a new one on next sign-in.`)) return;
-    try {
-      const res = await api.post(`/users/${u._id}/reset-password`);
-      toast.success(res.data.message || `${u.name}'s password was reset. They can set a new one on next sign-in.`);
-    } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to reset password');
-    }
-  };
-
   const handleToggleActive = async (u) => {
     try {
       await api.put(`/users/${u._id}`, { isActive: !u.isActive });
@@ -238,12 +228,6 @@ const AccountManagement = () => {
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => handleResetPassword(u)}
-                            className="text-xs font-medium px-3 py-1.5 rounded-lg transition-all text-brand hover:bg-brand-50 border border-brand/30"
-                          >
-                            Reset Password
-                          </button>
                           <button
                             onClick={() => handleToggleActive(u)}
                             className={`text-xs font-medium px-3 py-1.5 rounded-lg transition-all ${
