@@ -17,7 +17,7 @@ const PlanCard = ({ plan }) => {
   const hasMore = plan.features.length > VISIBLE || excluded.length > 0;
 
   return (
-    <div className={`relative rounded-2xl p-6 border transition-all ${hi ? 'bg-brand border-brand shadow-lg shadow-brand/15 md:scale-105' : 'bg-surface border-navy-200 hover:border-brand/30 hover:shadow-card-md'}`}>
+    <div className={`relative rounded-2xl p-6 border transition-all duration-300 ${hi ? 'bg-brand border-brand shadow-[0_24px_60px_-18px_rgb(14_165_233_/_0.6)] md:scale-105' : 'bg-surface border-navy-200 hover:border-brand/40 hover:-translate-y-1 hover:shadow-[0_18px_40px_-16px_rgb(14_165_233_/_0.3)]'}`}>
       {plan.badge && (
         <div className="absolute -top-3 left-1/2 -translate-x-1/2">
           <span className="bg-warning text-navy-800 text-xs font-bold px-3 py-1 rounded-full">{plan.badge}</span>
@@ -77,6 +77,13 @@ const PlanCard = ({ plan }) => {
     </div>
   );
 };
+
+const Eyebrow = ({ children }) => (
+  <span className="inline-flex items-center gap-2 text-brand text-xs font-semibold tracking-widest uppercase bg-brand/10 border border-brand/20 rounded-full px-3.5 py-1.5">
+    <span className="w-1.5 h-1.5 rounded-full bg-brand" />
+    {children}
+  </span>
+);
 
 const LandingPage = () => {
   const [plans, setPlans] = useState([]);
@@ -251,18 +258,20 @@ const LandingPage = () => {
       </section>
 
       {/* ── Features ── */}
-      <section id="features" className="py-24 bg-bg">
-        <div className="max-w-6xl mx-auto px-6">
+      <section id="features" className="relative py-24 bg-bg overflow-hidden">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[44rem] h-72 bg-brand/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="relative max-w-6xl mx-auto px-6">
           <div className="text-center mb-14">
-            <span className="text-brand text-sm font-semibold tracking-widest uppercase">Features</span>
-            <h2 className="text-3xl font-bold text-navy mt-2">Everything your team needs</h2>
+            <Eyebrow>Features</Eyebrow>
+            <h2 className="text-3xl md:text-4xl font-bold text-navy mt-4">Everything your team needs</h2>
             <p className="text-navy-500 mt-3 max-w-md mx-auto">A complete toolkit for task management, team coordination, and performance tracking.</p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {features.map((f, i) => (
               <Reveal key={i} delay={(i % 3) * 90}>
-                <div className="h-full bg-surface border border-navy-200 rounded-2xl p-6 hover:shadow-card-md hover:border-brand/30 hover:-translate-y-1 transition-all duration-200 group">
-                  <div className="w-11 h-11 rounded-xl bg-brand/10 text-brand flex items-center justify-center mb-4 group-hover:bg-brand group-hover:text-white group-hover:scale-110 transition-all">{f.icon}</div>
+                <div className="relative h-full bg-surface border border-navy-200 rounded-2xl p-6 hover:border-brand/40 hover:-translate-y-1 transition-all duration-300 group overflow-hidden hover:shadow-[0_18px_40px_-16px_rgb(14_165_233_/_0.35)]">
+                  <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-brand/15 to-brand/5 text-brand flex items-center justify-center mb-4 group-hover:from-brand group-hover:to-brand-dark group-hover:text-white group-hover:scale-110 transition-all duration-300">{f.icon}</div>
                   <h3 className="font-semibold text-navy mb-2 group-hover:text-brand transition-colors">{f.title}</h3>
                   <p className="text-navy-500 text-sm leading-relaxed">{f.desc}</p>
                 </div>
@@ -273,22 +282,24 @@ const LandingPage = () => {
       </section>
 
       {/* ── How it works ── */}
-      <section id="how-it-works" className="py-24 bg-slate-900">
-        <div className="max-w-5xl mx-auto px-6">
-          <div className="text-center mb-14">
-            <span className="text-brand text-sm font-semibold tracking-widest uppercase">How it works</span>
-            <h2 className="text-3xl font-bold text-white mt-2">Up and running in minutes</h2>
+      <section id="how-it-works" className="relative py-24 bg-slate-900 overflow-hidden">
+        <div className="absolute top-1/3 right-[12%] w-72 h-72 bg-brand/10 rounded-full blur-3xl animate-drift pointer-events-none" />
+        <div className="absolute bottom-0 left-[10%] w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl animate-drift-slow pointer-events-none" />
+        <div className="relative max-w-5xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <Eyebrow>How it works</Eyebrow>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mt-4">Up and running in minutes</h2>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             {steps.map((s, i) => (
               <Reveal key={i} delay={i * 140} className="relative text-center">
                 {i < steps.length - 1 && (
-                  <div className="hidden md:block absolute top-8 left-1/2 w-full h-px border-t border-dashed border-slate-700" />
+                  <div className="hidden md:block absolute top-9 left-1/2 w-full h-px bg-gradient-to-r from-brand/40 to-transparent" />
                 )}
-                <div className="relative inline-flex items-center justify-center w-16 h-16 rounded-full bg-brand/10 border border-brand/20 mb-4">
-                  <span className="text-brand font-bold text-lg">{s.n}</span>
+                <div className="relative inline-flex items-center justify-center w-[4.5rem] h-[4.5rem] rounded-2xl bg-gradient-to-br from-brand/25 to-brand/5 border border-brand/30 mb-5 shadow-lg shadow-brand/10">
+                  <span className="text-brand font-bold text-xl">{s.n}</span>
                 </div>
-                <h3 className="font-semibold text-white mb-2">{s.title}</h3>
+                <h3 className="font-semibold text-white text-lg mb-2">{s.title}</h3>
                 <p className="text-slate-400 text-sm leading-relaxed">{s.desc}</p>
               </Reveal>
             ))}
@@ -297,11 +308,12 @@ const LandingPage = () => {
       </section>
 
       {/* ── Pricing ── */}
-      <section id="pricing" className="py-24 bg-bg">
-        <div className="max-w-5xl mx-auto px-6">
+      <section id="pricing" className="relative py-24 bg-bg overflow-hidden">
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[48rem] h-72 bg-brand/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="relative max-w-5xl mx-auto px-6">
           <div className="text-center mb-14">
-            <span className="text-brand text-sm font-semibold tracking-widest uppercase">Plans</span>
-            <h2 className="text-3xl font-bold text-navy mt-2">The right plan for your team size</h2>
+            <Eyebrow>Plans</Eyebrow>
+            <h2 className="text-3xl md:text-4xl font-bold text-navy mt-4">The right plan for your team size</h2>
             <p className="text-navy-500 mt-3">Start free. Upgrade when you need more.</p>
           </div>
 
