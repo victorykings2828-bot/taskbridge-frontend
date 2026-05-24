@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../utils/api';
 import ThemeToggle from '../components/common/ThemeToggle';
+import Reveal from '../components/common/Reveal';
 import { TargetIcon, ChartIcon, BellIcon, ClipboardIcon, StarIcon, LockIcon } from '../components/common/icons';
 
 // A pricing card with a collapsible feature list. Collapsed it shows the top
@@ -176,26 +177,26 @@ const LandingPage = () => {
       <section className="relative bg-slate-900 min-h-[92vh] flex items-center overflow-hidden">
         {/* Background grid */}
         <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
-        {/* Accent blobs */}
-        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-brand/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 left-1/4 w-64 h-64 bg-brand/5 rounded-full blur-3xl" />
+        {/* Accent blobs (slowly drifting) */}
+        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-brand/10 rounded-full blur-3xl animate-drift" />
+        <div className="absolute bottom-1/4 left-1/4 w-64 h-64 bg-brand/5 rounded-full blur-3xl animate-drift-slow" />
 
         <div className="relative max-w-6xl mx-auto px-6 pt-24 pb-20 grid lg:grid-cols-2 gap-12 items-center">
           <div>
-            <div className="inline-flex items-center gap-2 bg-brand/10 border border-brand/20 rounded-full px-3 py-1.5 mb-6">
+            <div className="rise inline-flex items-center gap-2 bg-brand/10 border border-brand/20 rounded-full px-3 py-1.5 mb-6" style={{ animationDelay: '0ms' }}>
               <span className="w-1.5 h-1.5 rounded-full bg-brand animate-pulse" />
               <span className="text-brand text-xs font-semibold tracking-wide">Trusted by growing teams</span>
             </div>
-            <h1 className="text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
+            <h1 className="rise text-5xl lg:text-6xl font-bold text-white leading-tight mb-6" style={{ animationDelay: '90ms' }}>
               Task management <br />
-              <span className="text-brand">that bridges</span> <br />
+              <span className="bg-gradient-to-r from-brand to-brand-light bg-clip-text text-transparent">that bridges</span> <br />
               your whole team
             </h1>
-            <p className="text-navy-400 text-lg leading-relaxed mb-8 max-w-lg">
+            <p className="rise text-navy-400 text-lg leading-relaxed mb-8 max-w-lg" style={{ animationDelay: '180ms' }}>
               TaskBridge connects managers and employees in one clean workspace. Assign work, track progress, gather feedback — all with full accountability.
             </p>
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Link to="/register" className="inline-flex items-center justify-center gap-2 bg-brand hover:bg-brand-dark text-white font-semibold px-6 py-3.5 rounded-xl transition-all shadow-lg shadow-brand/25">
+            <div className="rise flex flex-col sm:flex-row gap-3" style={{ animationDelay: '270ms' }}>
+              <Link to="/register" className="inline-flex items-center justify-center gap-2 bg-brand hover:bg-brand-dark text-white font-semibold px-6 py-3.5 rounded-xl transition-all shadow-lg shadow-brand/25 hover:shadow-brand/40 hover:-translate-y-0.5 active:translate-y-0">
                 Start for free
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
               </Link>
@@ -203,15 +204,18 @@ const LandingPage = () => {
                 Sign in to your workspace
               </Link>
             </div>
-            <p className="text-navy-500 text-xs mt-4">No credit card required · Free plan available · Setup in 2 minutes</p>
+            <p className="rise text-navy-500 text-xs mt-4" style={{ animationDelay: '360ms' }}>No credit card required · Free plan available · Setup in 2 minutes</p>
           </div>
 
-          {/* Hero card preview */}
-          <div className="hidden lg:block relative">
-            <div className="bg-white/5 backdrop-blur border border-white/10 rounded-2xl p-6">
+          {/* Hero card preview (floats gently) */}
+          <div className="hidden lg:block relative rise" style={{ animationDelay: '300ms' }}>
+            <div className="absolute -inset-4 bg-brand/10 rounded-3xl blur-2xl" />
+            <div className="relative bg-white/5 backdrop-blur border border-white/10 rounded-2xl p-6 animate-float shadow-2xl shadow-black/40">
               <div className="flex items-center justify-between mb-4">
                 <span className="text-white font-semibold text-sm">Team Overview</span>
-                <span className="text-brand text-xs font-medium bg-brand/10 px-2 py-0.5 rounded-full">Live</span>
+                <span className="inline-flex items-center gap-1.5 text-brand text-xs font-medium bg-brand/10 px-2 py-0.5 rounded-full">
+                  <span className="w-1.5 h-1.5 rounded-full bg-brand animate-pulse" />Live
+                </span>
               </div>
               {[
                 { name: 'Design landing page', user: 'Priya S.', status: 'In Progress', color: 'bg-brand/20 text-brand' },
@@ -219,7 +223,7 @@ const LandingPage = () => {
                 { name: 'Database migration', user: 'Anita R.', status: 'Completed', color: 'bg-success/20 text-success' },
                 { name: 'Write test cases', user: 'Dev K.', status: 'Not Started', color: 'bg-slate-700/50 text-slate-300' },
               ].map((t, i) => (
-                <div key={i} className="flex items-center justify-between py-3 border-b border-white/5 last:border-0">
+                <div key={i} className="rise flex items-center justify-between py-3 border-b border-white/5 last:border-0" style={{ animationDelay: `${500 + i * 120}ms` }}>
                   <div>
                     <p className="text-white text-sm font-medium">{t.name}</p>
                     <p className="text-navy-500 text-xs mt-0.5">{t.user}</p>
@@ -242,11 +246,13 @@ const LandingPage = () => {
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {features.map((f, i) => (
-              <div key={i} className="bg-surface border border-navy-200 rounded-2xl p-6 hover:shadow-card-md hover:border-brand/30 transition-all group">
-                <div className="w-11 h-11 rounded-xl bg-brand/10 text-brand flex items-center justify-center mb-4 group-hover:bg-brand group-hover:text-white transition-colors">{f.icon}</div>
-                <h3 className="font-semibold text-navy mb-2 group-hover:text-brand transition-colors">{f.title}</h3>
-                <p className="text-navy-500 text-sm leading-relaxed">{f.desc}</p>
-              </div>
+              <Reveal key={i} delay={(i % 3) * 90}>
+                <div className="h-full bg-surface border border-navy-200 rounded-2xl p-6 hover:shadow-card-md hover:border-brand/30 hover:-translate-y-1 transition-all duration-200 group">
+                  <div className="w-11 h-11 rounded-xl bg-brand/10 text-brand flex items-center justify-center mb-4 group-hover:bg-brand group-hover:text-white group-hover:scale-110 transition-all">{f.icon}</div>
+                  <h3 className="font-semibold text-navy mb-2 group-hover:text-brand transition-colors">{f.title}</h3>
+                  <p className="text-navy-500 text-sm leading-relaxed">{f.desc}</p>
+                </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -261,16 +267,16 @@ const LandingPage = () => {
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             {steps.map((s, i) => (
-              <div key={i} className="relative text-center">
+              <Reveal key={i} delay={i * 140} className="relative text-center">
                 {i < steps.length - 1 && (
-                  <div className="hidden md:block absolute top-8 left-1/2 w-full h-px border-t border-dashed border-navy-700" />
+                  <div className="hidden md:block absolute top-8 left-1/2 w-full h-px border-t border-dashed border-slate-700" />
                 )}
                 <div className="relative inline-flex items-center justify-center w-16 h-16 rounded-full bg-brand/10 border border-brand/20 mb-4">
                   <span className="text-brand font-bold text-lg">{s.n}</span>
                 </div>
                 <h3 className="font-semibold text-white mb-2">{s.title}</h3>
-                <p className="text-navy-400 text-sm leading-relaxed">{s.desc}</p>
-              </div>
+                <p className="text-slate-400 text-sm leading-relaxed">{s.desc}</p>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -286,22 +292,26 @@ const LandingPage = () => {
           </div>
 
           <div className="grid md:grid-cols-3 gap-6 items-start">
-            {displayPlans.map((plan) => (
-              <PlanCard key={plan.id} plan={plan} />
+            {displayPlans.map((plan, i) => (
+              <Reveal key={plan.id} delay={i * 110}>
+                <PlanCard plan={plan} />
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
 
       {/* ── CTA ── */}
-      <section className="py-20 bg-slate-900 text-center">
-        <div className="max-w-2xl mx-auto px-6">
-          <h2 className="text-3xl font-bold text-white mb-4">Ready to bridge your team?</h2>
-          <p className="text-navy-400 mb-8">Join hundreds of teams already using TaskBridge to coordinate their work.</p>
-          <Link to="/register" className="inline-flex items-center gap-2 bg-brand hover:bg-brand-dark text-white font-semibold px-8 py-4 rounded-xl transition-all shadow-lg shadow-brand/25 text-lg">
+      <section className="relative py-24 bg-slate-900 text-center overflow-hidden">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[36rem] h-[36rem] bg-brand/10 rounded-full blur-3xl animate-drift-slow" />
+        <Reveal className="relative max-w-2xl mx-auto px-6">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Ready to bridge your team?</h2>
+          <p className="text-slate-400 mb-8">Join hundreds of teams already using TaskBridge to coordinate their work.</p>
+          <Link to="/register" className="inline-flex items-center gap-2 bg-brand hover:bg-brand-dark text-white font-semibold px-8 py-4 rounded-xl transition-all shadow-lg shadow-brand/25 hover:shadow-brand/40 hover:-translate-y-0.5 text-lg">
             Create your free workspace
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
           </Link>
-        </div>
+        </Reveal>
       </section>
 
       {/* ── Footer ── */}

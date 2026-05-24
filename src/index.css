@@ -90,6 +90,32 @@
 @layer utilities {
   .animate-fade-in { animation: fadeIn 0.25s ease-out; }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* On-load staggered rise (above-the-fold hero) */
+  @keyframes riseUp { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: translateY(0); } }
+  .rise { opacity: 0; animation: riseUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+  /* Gentle float for the hero preview card */
+  @keyframes floatY { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+  .animate-float { animation: floatY 6s ease-in-out infinite; }
+
+  /* Slow drifting background glow blobs */
+  @keyframes drift {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33%      { transform: translate(28px, -34px) scale(1.12); }
+    66%      { transform: translate(-24px, 22px) scale(0.94); }
+  }
+  .animate-drift { animation: drift 16s ease-in-out infinite; }
+  .animate-drift-slow { animation: drift 22s ease-in-out infinite; }
+
+  /* Scroll-reveal (toggled by the Reveal component) */
+  .reveal { opacity: 0; transform: translateY(26px); transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+  .reveal.in-view { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rise, .animate-float, .animate-drift, .animate-drift-slow { animation: none !important; opacity: 1 !important; transform: none !important; }
+  .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
 }
 
 /* ── Dark-mode tints for default Tailwind palette accents (badges, stat tiles,
