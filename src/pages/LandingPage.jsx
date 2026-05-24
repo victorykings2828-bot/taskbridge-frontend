@@ -2,6 +2,79 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../utils/api';
 
+// A pricing card with a collapsible feature list. Collapsed it shows the top
+// features; expanded it reveals the rest plus a "Not included" list so visitors
+// can see exactly what each plan is missing.
+const PlanCard = ({ plan }) => {
+  const [open, setOpen] = useState(false);
+  const VISIBLE = 4;
+  const hi = plan.highlighted;
+  const excluded = plan.excluded || [];
+  const shown = open ? plan.features : plan.features.slice(0, VISIBLE);
+  const hasMore = plan.features.length > VISIBLE || excluded.length > 0;
+
+  return (
+    <div className={`relative rounded-2xl p-6 border transition-all ${hi ? 'bg-brand border-brand shadow-lg shadow-brand/15 md:scale-105' : 'bg-surface border-navy-200 hover:border-brand/30 hover:shadow-card-md'}`}>
+      {plan.badge && (
+        <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+          <span className="bg-warning text-navy-800 text-xs font-bold px-3 py-1 rounded-full">{plan.badge}</span>
+        </div>
+      )}
+      <div className="mb-4">
+        <h3 className={`font-bold text-lg mb-1 ${hi ? 'text-white' : 'text-navy'}`}>{plan.name}</h3>
+        <p className={`text-sm ${hi ? 'text-white/70' : 'text-navy-500'}`}>{plan.description}</p>
+      </div>
+
+      <ul className="space-y-2 mb-3">
+        {shown.map((f, i) => (
+          <li key={i} className={`flex items-start gap-2 text-sm ${hi ? 'text-white/90' : 'text-navy-600'}`}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="flex-shrink-0 mt-0.5">
+              <path d="M20 6L9 17l-5-5" stroke={hi ? '#fff' : '#10B981'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            {f}
+          </li>
+        ))}
+
+        {open && excluded.length > 0 && (
+          <>
+            <li className={`pt-2 text-xs font-semibold uppercase tracking-wide ${hi ? 'text-white/50' : 'text-navy-400'}`}>Not included</li>
+            {excluded.map((f, i) => (
+              <li key={`x${i}`} className={`flex items-start gap-2 text-sm ${hi ? 'text-white/40 line-through' : 'text-navy-300 line-through'}`}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="flex-shrink-0 mt-0.5">
+                  <path d="M18 6L6 18M6 6l12 12" stroke={hi ? 'rgba(255,255,255,0.5)' : '#CBD5E1'} strokeWidth="2.5" strokeLinecap="round"/>
+                </svg>
+                {f}
+              </li>
+            ))}
+          </>
+        )}
+      </ul>
+
+      {hasMore && (
+        <button onClick={() => setOpen(!open)}
+          className={`flex items-center gap-1 text-xs font-semibold mb-5 transition-colors ${hi ? 'text-white/90 hover:text-white' : 'text-brand hover:text-brand-dark'}`}>
+          {open ? 'Show less' : `Show all features${excluded.length ? ' & what’s missing' : ''}`}
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className={`transition-transform ${open ? 'rotate-180' : ''}`}>
+            <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </button>
+      )}
+
+      {plan.ctaLink.startsWith('mailto') ? (
+        <a href={plan.ctaLink}
+          className={`block text-center text-sm font-semibold py-2.5 rounded-xl transition-all ${hi ? 'bg-white text-brand hover:bg-brand-50' : 'bg-brand text-white hover:bg-brand-dark'}`}>
+          {plan.cta}
+        </a>
+      ) : (
+        <Link to={plan.ctaLink}
+          className={`block text-center text-sm font-semibold py-2.5 rounded-xl transition-all ${hi ? 'bg-white text-brand hover:bg-brand-50' : 'bg-brand text-white hover:bg-brand-dark'}`}>
+          {plan.cta}
+        </Link>
+      )}
+    </div>
+  );
+};
+
 const LandingPage = () => {
   const [plans, setPlans] = useState([]);
   const [scrolled, setScrolled] = useState(false);
@@ -41,6 +114,7 @@ const LandingPage = () => {
     highlighted: p.highlighted,
     description: p.description,
     features: p.features?.filter(f => f.included).map(f => f.text) || [],
+    excluded: p.features?.filter(f => !f.included).map(f => f.text) || [],
     cta: p.id === 'free' ? 'Get started free' : (p.id === 'pro' ? 'Contact us' : 'Contact us'),
     ctaLink: p.id === 'free' ? '/register' : 'mailto:hello@taskbridge.io',
   })) : [
@@ -48,18 +122,21 @@ const LandingPage = () => {
       id: 'free', name: 'Starter', badge: null, highlighted: false,
       description: 'Perfect for a solo manager with a small team',
       features: ['1 Manager account', 'Up to 5 employees', 'Task creation & tracking', 'In-app notifications', 'Employee & manager dashboards', 'Email support'],
+      excluded: ['Task priority levels', 'Performance analytics', 'Team workload view', 'Feedback & 5-star ratings', 'Audit logs & compliance', 'File attachments & deliverables'],
       cta: 'Get started free', ctaLink: '/register',
     },
     {
       id: 'pro', name: 'Pro', badge: 'Most Popular', highlighted: true,
       description: 'Everything a growing team needs, simple and affordable',
       features: ['Up to 5 Managers', 'Up to 100 employees per manager', 'Task priority levels', 'Team workload overview', 'Feedback & 5-star ratings', 'Performance dashboards', 'Deadline overdue alerts', 'Task revision workflow'],
+      excluded: ['Audit logs & export', 'Custom company branding', 'Manager benchmarking'],
       cta: 'Contact us', ctaLink: 'mailto:hello@taskbridge.io',
     },
     {
       id: 'enterprise', name: 'Enterprise', badge: null, highlighted: false,
       description: 'Unlimited scale and full visibility across your organisation',
       features: ['Unlimited managers', 'Unlimited employees', 'Everything in Pro', 'Full audit log & export', 'Cross-team workload balancing', 'Manager benchmarking', 'Custom company branding', 'Priority support'],
+      excluded: [],
       cta: 'Contact us', ctaLink: 'mailto:hello@taskbridge.io',
     },
   ];
@@ -205,40 +282,9 @@ const LandingPage = () => {
             <p className="text-navy-500 mt-3">Start free. Upgrade when you need more.</p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-3 gap-6 items-start">
             {displayPlans.map((plan) => (
-              <div key={plan.id} className={`relative rounded-2xl p-6 border transition-all ${plan.highlighted ? 'bg-brand border-brand shadow-lg shadow-brand/15 scale-105' : 'bg-surface border-navy-200 hover:border-brand/30 hover:shadow-card-md'}`}>
-                {plan.badge && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <span className="bg-warning text-navy-800 text-xs font-bold px-3 py-1 rounded-full">{plan.badge}</span>
-                  </div>
-                )}
-                <div className="mb-4">
-                  <h3 className={`font-bold text-lg mb-1 ${plan.highlighted ? 'text-white' : 'text-navy'}`}>{plan.name}</h3>
-                  <p className={`text-sm ${plan.highlighted ? 'text-white/70' : 'text-navy-500'}`}>{plan.description}</p>
-                </div>
-                <ul className="space-y-2 mb-6">
-                  {plan.features.map((f, i) => (
-                    <li key={i} className={`flex items-start gap-2 text-sm ${plan.highlighted ? 'text-white/90' : 'text-navy-600'}`}>
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="flex-shrink-0 mt-0.5">
-                        <path d="M20 6L9 17l-5-5" stroke={plan.highlighted ? '#fff' : '#10B981'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-                {plan.ctaLink.startsWith('mailto') ? (
-                  <a href={plan.ctaLink}
-                    className={`block text-center text-sm font-semibold py-2.5 rounded-xl transition-all ${plan.highlighted ? 'bg-white text-brand hover:bg-brand-50' : 'bg-brand text-white hover:bg-brand-dark'}`}>
-                    {plan.cta}
-                  </a>
-                ) : (
-                  <Link to={plan.ctaLink}
-                    className={`block text-center text-sm font-semibold py-2.5 rounded-xl transition-all ${plan.highlighted ? 'bg-white text-brand hover:bg-brand-50' : 'bg-brand text-white hover:bg-brand-dark'}`}>
-                    {plan.cta}
-                  </Link>
-                )}
-              </div>
+              <PlanCard key={plan.id} plan={plan} />
             ))}
           </div>
         </div>

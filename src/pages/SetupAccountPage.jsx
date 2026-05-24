@@ -36,22 +36,59 @@ const SetupAccountPage = () => {
   const [searchParams] = useSearchParams();
   const { applyAuth } = useAuth();
 
-  // Email is pre-filled from the login redirect (state) or a query param.
   const prefilledEmail = location.state?.email || searchParams.get('email') || '';
   const [email, setEmail] = useState(prefilledEmail);
+  const [step, setStep] = useState(1); // 1 = request code, 2 = set password
+  const [otp, setOtp] = useState('');
   const [form, setForm] = useState({ password: '', confirm: '' });
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
+  const [resending, setResending] = useState(false);
   const [showPass, setShowPass] = useState(false);
   const strength = passwordStrength(form.password);
   const emailLocked = Boolean(prefilledEmail);
 
   useEffect(() => { if (prefilledEmail) setEmail(prefilledEmail); }, [prefilledEmail]);
 
+  const sendCode = async () => {
+    if (!email.trim() || !/\S+@\S+\.\S+/.test(email)) {
+      setErrors({ email: 'Enter a valid email' });
+      return false;
+    }
+    const res = await api.post('/auth/setup-account/request-otp', { email: email.trim().toLowerCase() });
+    return res.data.success;
+  };
+
+  const handleRequest = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    try {
+      if (await sendCode()) {
+        toast.success('If your account is pending, a code has been sent to your email.');
+        setStep(2);
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Could not send the code. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleResend = async () => {
+    setResending(true);
+    try {
+      await api.post('/auth/setup-account/request-otp', { email: email.trim().toLowerCase() });
+      toast.success('A new code is on its way.');
+    } catch {
+      toast.error('Could not resend the code.');
+    } finally {
+      setResending(false);
+    }
+  };
+
   const validate = () => {
     const e = {};
-    if (!email.trim()) e.email = 'Email is required';
-    else if (!/\S+@\S+\.\S+/.test(email)) e.email = 'Enter a valid email';
+    if (otp.trim().length !== 6) e.otp = 'Enter the 6-digit code';
     if (!form.password) e.password = 'Password is required';
     else if (form.password.length < 8) e.password = 'At least 8 characters';
     else if (!/[A-Z]/.test(form.password)) e.password = 'Include an uppercase letter';
@@ -62,13 +99,14 @@ const SetupAccountPage = () => {
     return Object.keys(e).length === 0;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSetup = async (e) => {
     e.preventDefault();
     if (!validate()) return;
     setSubmitting(true);
     try {
       const res = await api.post('/auth/setup-account', {
         email: email.trim().toLowerCase(),
+        otp: otp.trim(),
         password: form.password,
       });
       if (res.data.success) {
@@ -79,16 +117,15 @@ const SetupAccountPage = () => {
     } catch (err) {
       const msg = err.response?.data?.message || 'Failed to set up account';
       toast.error(msg);
-      if (msg.toLowerCase().includes('invited') || msg.toLowerCase().includes('not')) {
-        setErrors({ email: msg });
-      } else if (msg.toLowerCase().includes('already')) {
-        // Already set up — send them to login
-        setTimeout(() => navigate('/login'), 1500);
-      }
+      if (msg.toLowerCase().includes('code')) setErrors({ otp: msg });
+      else if (msg.toLowerCase().includes('already')) setTimeout(() => navigate('/login'), 1500);
     } finally {
       setSubmitting(false);
     }
   };
+
+  const inputCls = (bad) =>
+    `w-full px-4 py-3 rounded-xl border text-sm outline-none transition-all focus:ring-2 focus:ring-brand/20 focus:border-brand ${bad ? 'border-danger bg-danger/5' : 'border-navy-200 bg-bg'}`;
 
   return (
     <div className="min-h-screen bg-bg flex items-center justify-center p-4">
@@ -104,51 +141,75 @@ const SetupAccountPage = () => {
               </svg>
             </div>
             <h1 className="text-xl font-bold text-navy">Set up your account</h1>
-            <p className="text-navy-500 text-sm mt-1">Create a password to finish setting up your TaskBridge account.</p>
+            <p className="text-navy-500 text-sm mt-1">
+              {step === 1
+                ? "We'll email you a code to confirm it's you, then you'll create a password."
+                : <>Enter the code sent to <span className="font-medium text-navy">{email}</span> and create your password.</>}
+            </p>
           </div>
 
-          <form onSubmit={handleSubmit} noValidate className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-navy-700 mb-1.5">Email <span className="text-danger">*</span></label>
-              <input type="email" autoComplete="email" value={email} readOnly={emailLocked}
-                onChange={e => { setEmail(e.target.value); setErrors({ ...errors, email: '' }); }}
-                placeholder="you@company.com"
-                className={`w-full px-4 py-3 rounded-xl border text-sm outline-none transition-all focus:ring-2 focus:ring-brand/20 focus:border-brand ${errors.email ? 'border-danger bg-danger/5' : 'border-navy-200 bg-bg'} ${emailLocked ? 'text-navy-500 cursor-not-allowed' : ''}`} />
-              {errors.email && <p className="text-danger text-xs mt-1.5 flex items-center gap-1"><span>⚠</span>{errors.email}</p>}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-navy-700 mb-1.5">Create password <span className="text-danger">*</span></label>
-              <div className="relative">
-                <input type={showPass ? 'text' : 'password'} autoComplete="new-password" value={form.password}
-                  onChange={e => { setForm({ ...form, password: e.target.value }); setErrors({ ...errors, password: '' }); }}
-                  placeholder="Min 8 chars, upper, lower, number"
-                  className={`w-full px-4 py-3 pr-16 rounded-xl border text-sm outline-none transition-all focus:ring-2 focus:ring-brand/20 focus:border-brand ${errors.password ? 'border-danger bg-danger/5' : 'border-navy-200 bg-bg'}`} />
-                <button type="button" onClick={() => setShowPass(!showPass)} className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-navy-500 hover:text-navy-700">{showPass ? 'Hide' : 'Show'}</button>
+          {step === 1 ? (
+            <form onSubmit={handleRequest} noValidate className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-navy-700 mb-1.5">Email <span className="text-danger">*</span></label>
+                <input type="email" autoComplete="email" value={email} readOnly={emailLocked}
+                  onChange={e => { setEmail(e.target.value); setErrors({ ...errors, email: '' }); }}
+                  placeholder="you@company.com"
+                  className={`${inputCls(errors.email)} ${emailLocked ? 'text-navy-500 cursor-not-allowed' : ''}`} />
+                {errors.email && <p className="text-danger text-xs mt-1.5 flex items-center gap-1"><span>⚠</span>{errors.email}</p>}
               </div>
-              {form.password && (
-                <div className="mt-1.5">
-                  <div className="flex gap-1 mb-1">{[1,2,3,4,5].map(i => <div key={i} className={`h-1 flex-1 rounded-full ${i <= strength.score ? strength.color : 'bg-navy-200'}`} />)}</div>
-                  <p className={`text-xs ${strength.score >= 4 ? 'text-success' : strength.score >= 3 ? 'text-warning' : 'text-danger'}`}>{strength.label}</p>
+              <button type="submit" disabled={submitting}
+                className="w-full bg-brand hover:bg-brand-dark text-white font-semibold py-3 rounded-xl transition-all disabled:opacity-60 flex items-center justify-center gap-2">
+                {submitting ? <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />Sending code...</> : 'Send verification code'}
+              </button>
+            </form>
+          ) : (
+            <form onSubmit={handleSetup} noValidate className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-navy-700 mb-1.5">Verification code <span className="text-danger">*</span></label>
+                <input type="text" inputMode="numeric" maxLength={6} autoComplete="one-time-code" autoFocus
+                  value={otp} onChange={e => { setOtp(e.target.value.replace(/\D/g, '').slice(0, 6)); setErrors({ ...errors, otp: '' }); }}
+                  placeholder="••••••"
+                  className="w-full px-4 py-3 rounded-xl border border-navy-200 bg-bg text-center text-xl font-bold tracking-[0.4em] outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand text-navy" />
+                {errors.otp && <p className="text-danger text-xs mt-1.5 flex items-center gap-1"><span>⚠</span>{errors.otp}</p>}
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-navy-700 mb-1.5">Create password <span className="text-danger">*</span></label>
+                <div className="relative">
+                  <input type={showPass ? 'text' : 'password'} autoComplete="new-password" value={form.password}
+                    onChange={e => { setForm({ ...form, password: e.target.value }); setErrors({ ...errors, password: '' }); }}
+                    placeholder="Min 8 chars, upper, lower, number"
+                    className={`${inputCls(errors.password)} pr-16`} />
+                  <button type="button" onClick={() => setShowPass(!showPass)} className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-navy-500 hover:text-navy-700">{showPass ? 'Hide' : 'Show'}</button>
                 </div>
-              )}
-              {errors.password && <p className="text-danger text-xs mt-1 flex items-center gap-1"><span>⚠</span>{errors.password}</p>}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-navy-700 mb-1.5">Confirm password <span className="text-danger">*</span></label>
-              <input type="password" autoComplete="new-password" value={form.confirm}
-                onChange={e => { setForm({ ...form, confirm: e.target.value }); setErrors({ ...errors, confirm: '' }); }}
-                placeholder="Repeat your password"
-                className={`w-full px-4 py-3 rounded-xl border text-sm outline-none transition-all focus:ring-2 focus:ring-brand/20 focus:border-brand ${errors.confirm ? 'border-danger bg-danger/5' : 'border-navy-200 bg-bg'}`} />
-              {errors.confirm && <p className="text-danger text-xs mt-1.5 flex items-center gap-1"><span>⚠</span>{errors.confirm}</p>}
-            </div>
-
-            <button type="submit" disabled={submitting}
-              className="w-full bg-brand hover:bg-brand-dark text-white font-semibold py-3 rounded-xl transition-all disabled:opacity-60 flex items-center justify-center gap-2 mt-1">
-              {submitting ? <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />Setting up...</> : 'Set password & continue'}
-            </button>
-          </form>
+                {form.password && (
+                  <div className="mt-1.5">
+                    <div className="flex gap-1 mb-1">{[1,2,3,4,5].map(i => <div key={i} className={`h-1 flex-1 rounded-full ${i <= strength.score ? strength.color : 'bg-navy-200'}`} />)}</div>
+                    <p className={`text-xs ${strength.score >= 4 ? 'text-success' : strength.score >= 3 ? 'text-warning' : 'text-danger'}`}>{strength.label}</p>
+                  </div>
+                )}
+                {errors.password && <p className="text-danger text-xs mt-1 flex items-center gap-1"><span>⚠</span>{errors.password}</p>}
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-navy-700 mb-1.5">Confirm password <span className="text-danger">*</span></label>
+                <input type="password" autoComplete="new-password" value={form.confirm}
+                  onChange={e => { setForm({ ...form, confirm: e.target.value }); setErrors({ ...errors, confirm: '' }); }}
+                  placeholder="Repeat your password"
+                  className={inputCls(errors.confirm)} />
+                {errors.confirm && <p className="text-danger text-xs mt-1.5 flex items-center gap-1"><span>⚠</span>{errors.confirm}</p>}
+              </div>
+              <button type="submit" disabled={submitting}
+                className="w-full bg-brand hover:bg-brand-dark text-white font-semibold py-3 rounded-xl transition-all disabled:opacity-60 flex items-center justify-center gap-2">
+                {submitting ? <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />Setting up...</> : 'Set password & continue'}
+              </button>
+              <div className="text-center text-sm text-navy-500">
+                Didn't get it?{' '}
+                <button type="button" onClick={handleResend} disabled={resending} className="text-brand font-medium hover:text-brand-dark disabled:opacity-60">
+                  {resending ? 'Resending...' : 'Resend code'}
+                </button>
+              </div>
+            </form>
+          )}
         </div>
 
         <p className="text-center text-navy-500 text-sm mt-4">
