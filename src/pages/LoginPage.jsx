@@ -102,7 +102,7 @@ const LoginPage = () => {
         return;
       }
       if (data.requirePasswordChange) {
-        toast('Please change your temporary password to continue', { icon: '🔐' });
+        toast('Please set a new password to continue', { icon: '🔐' });
         navigate('/change-password', { replace: true });
       } else {
         const firstName = data.user.name.split(' ')[0];

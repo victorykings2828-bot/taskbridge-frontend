@@ -99,7 +99,7 @@ const ChangePasswordPage = () => {
             <span className="text-white text-2xl">🔐</span>
           </div>
           <h1 className="text-2xl font-bold text-white">Set Your Password</h1>
-          <p className="text-slate-400 text-sm mt-1">You must change your temporary password to continue</p>
+          <p className="text-slate-400 text-sm mt-1">Set a new password to continue</p>
         </div>
 
         <div className="bg-white rounded-2xl shadow-2xl p-8">
@@ -111,10 +111,10 @@ const ChangePasswordPage = () => {
 
           <form onSubmit={handleSubmit} noValidate className="space-y-5">
             <PasswordField
-              label="Temporary Password"
+              label="Current Password"
               field="currentPassword"
               showKey="current"
-              placeholder="Enter your temporary password"
+              placeholder="Enter your current password"
             />
 
             <PasswordField

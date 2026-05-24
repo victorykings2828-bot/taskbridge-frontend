@@ -29,7 +29,7 @@ const LandingPage = () => {
 
   const steps = [
     { n: '01', title: 'Register your company', desc: 'Create your TaskBridge workspace in under 2 minutes. Just your company name and email.' },
-    { n: '02', title: 'Invite your team', desc: 'Add managers and employees. Share the company join code for easy onboarding.' },
+    { n: '02', title: 'Invite your team', desc: 'Add managers and employees by email — they sign in and set their own password.' },
     { n: '03', title: 'Start assigning work', desc: 'Create tasks, set deadlines, track progress. Your whole team, coordinated.' },
   ];
 
