@@ -175,11 +175,25 @@ const LandingPage = () => {
 
       {/* ── Hero ── */}
       <section className="relative bg-slate-900 min-h-[92vh] flex items-center overflow-hidden">
-        {/* Background grid */}
-        <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
-        {/* Accent blobs (slowly drifting) */}
-        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-brand/10 rounded-full blur-3xl animate-drift" />
-        <div className="absolute bottom-1/4 left-1/4 w-64 h-64 bg-brand/5 rounded-full blur-3xl animate-drift-slow" />
+        {/* ── Ambient motion background (seamless loops, sits behind content) ── */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+          {/* Slowly rotating conic sheen */}
+          <div
+            className="absolute top-1/2 left-1/2 w-[140vw] h-[140vw] opacity-[0.10] animate-spin-slow"
+            style={{ background: 'conic-gradient(from 0deg, transparent 0deg, rgb(14 165 233 / 0.55) 60deg, transparent 140deg, rgb(56 189 248 / 0.45) 240deg, transparent 320deg)' }}
+          />
+          {/* Panning dot grid */}
+          <div
+            className="absolute inset-0 opacity-[0.05] animate-grid-pan"
+            style={{ backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)', backgroundSize: '60px 60px' }}
+          />
+          {/* Drifting aurora orbs */}
+          <div className="absolute top-[15%] right-[22%] w-[28rem] h-[28rem] bg-brand/10 rounded-full blur-3xl animate-drift animate-glow-pulse" />
+          <div className="absolute bottom-[12%] left-[18%] w-72 h-72 bg-sky-400/10 rounded-full blur-3xl animate-drift-slow" />
+          <div className="absolute top-[45%] left-[8%] w-56 h-56 bg-indigo-500/10 rounded-full blur-3xl animate-drift-slow" style={{ animationDelay: '4s' }} />
+          {/* Fade the bottom into the section for a clean seam */}
+          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-slate-900 to-transparent" />
+        </div>
 
         <div className="relative max-w-6xl mx-auto px-6 pt-24 pb-20 grid lg:grid-cols-2 gap-12 items-center">
           <div>
