@@ -4,8 +4,8 @@
 export const COMPANY = {
   name: 'TaskBridge',
   legalName: 'TaskBridge', // your registered business / sole-proprietor name
-  email: 'support@taskbridge.app', // a real, monitored support email
-  phone: '+91 00000 00000', // your business phone number
-  address: 'Your registered business address, City, State, PIN, India',
+  email: 'taskbridge111@gmail.com', // a real, monitored support email
+  phone: '+91 8123520158', // your business phone number
+  address: 'Vidya Nagar, Hubli, Karnataka,India 580030',
   lastUpdated: 'May 2026',
 };
