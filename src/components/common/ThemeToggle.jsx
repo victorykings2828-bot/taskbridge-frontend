@@ -2,11 +2,10 @@ import React, { useEffect, useState } from 'react';
 
 const getInitialTheme = () => {
   try {
-    const saved = localStorage.getItem('theme');
-    if (saved === 'dark' || saved === 'light') return saved;
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    // Dark is the default; only honor an explicit 'light' choice.
+    return localStorage.getItem('theme') === 'light' ? 'light' : 'dark';
   } catch {
-    return 'light';
+    return 'dark';
   }
 };
 
