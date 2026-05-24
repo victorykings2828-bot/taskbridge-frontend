@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import api from '../utils/api';
+import { BriefcaseIcon, UsersIcon, ChartIcon } from '../components/common/icons';
 
 const fmt = (b) => {
   if (!b) return '0 B';
@@ -203,12 +204,12 @@ export default function SubscriptionPage() {
 
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               {[
-                { label: 'Managers',    used: org.usage?.managers  || 0, limit: org.limits?.managers,            icon: '👔' },
-                { label: 'Employees',   used: org.usage?.employees || 0, limit: org.limits?.totalEmployees,      icon: '👥' },
-                { label: 'Per manager', used: '—',                        limit: org.limits?.employeesPerManager, icon: '📊' },
+                { label: 'Managers',    used: org.usage?.managers  || 0, limit: org.limits?.managers,            icon: <BriefcaseIcon size={15} /> },
+                { label: 'Employees',   used: org.usage?.employees || 0, limit: org.limits?.totalEmployees,      icon: <UsersIcon size={15} /> },
+                { label: 'Per manager', used: '—',                        limit: org.limits?.employeesPerManager, icon: <ChartIcon size={15} /> },
               ].map(({ label, used, limit, icon }) => (
                 <div key={label} className="bg-bg rounded-xl p-3 border border-navy-200">
-                  <div className="flex items-center gap-1.5 mb-1"><span>{icon}</span><p className="text-xs text-navy-500 font-medium">{label}</p></div>
+                  <div className="flex items-center gap-1.5 mb-1"><span className="text-brand">{icon}</span><p className="text-xs text-navy-500 font-medium">{label}</p></div>
                   <p className="text-sm font-bold text-navy">{used}<span className="text-navy-400 font-normal"> / {limit >= 9999 ? '∞' : limit}</span></p>
                 </div>
               ))}
@@ -220,7 +221,7 @@ export default function SubscriptionPage() {
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <p className="font-bold text-lg mb-1">Upgrade to Pro — ₹1,249/month</p>
-                  <p className="text-white/75 text-sm">5 managers, 100 employees each, performance dashboards, workload view, feedback ratings and more.</p>
+                  <p className="text-white/75 text-sm">5 managers, 20 employees each, performance dashboards, workload view, feedback ratings and more.</p>
                   <p className="text-white/50 text-xs mt-1.5">Pay securely via UPI, cards, or net banking · Cancel anytime</p>
                 </div>
                 <button onClick={() => handleUpgrade('pro')} disabled={!!paying}
