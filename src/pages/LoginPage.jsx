@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Navigate, useSearchParams, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import api from '../utils/api';
 import toast from 'react-hot-toast';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
@@ -21,7 +22,7 @@ const Logo = () => (
 );
 
 const LoginPage = () => {
-  const { user, login, loading } = useAuth();
+  const { user, login, applyAuth, loading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
@@ -31,6 +32,7 @@ const LoginPage = () => {
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
   const [serverState, setServerState] = useState('checking');
+  const [workspaceChoice, setWorkspaceChoice] = useState(null); // { selectionToken, workspaces }
 
   useEffect(() => {
     const error = searchParams.get('error');
@@ -101,6 +103,11 @@ const LoginPage = () => {
         navigate('/setup-account', { replace: true, state: { email: data.email || form.email.trim().toLowerCase() } });
         return;
       }
+      if (data.chooseWorkspace) {
+        // Same email + password belongs to more than one company — let them pick.
+        setWorkspaceChoice({ selectionToken: data.selectionToken, workspaces: data.workspaces || [] });
+        return;
+      }
       if (data.requirePasswordChange) {
         toast('Please set a new password to continue', { icon: '🔐' });
         navigate('/change-password', { replace: true });
@@ -124,6 +131,50 @@ const LoginPage = () => {
       setSubmitting(false);
     }
   };
+
+  const handleSelectWorkspace = async (userId) => {
+    setSubmitting(true);
+    try {
+      const res = await api.post('/auth/select-workspace', { selectionToken: workspaceChoice.selectionToken, userId });
+      applyAuth(res.data);
+      const firstName = res.data.user.name.split(' ')[0];
+      toast.success(`Welcome back, ${firstName}!`);
+      navigate('/dashboard', { replace: true });
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Could not open that workspace. Please sign in again.');
+      setWorkspaceChoice(null);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  // Workspace picker — shown when one email+password matches multiple companies.
+  if (workspaceChoice) {
+    return (
+      <div className="min-h-screen bg-bg flex items-center justify-center p-4">
+        <div className="w-full max-w-md">
+          <Logo />
+          <div className="bg-surface border border-navy-200 rounded-2xl p-7 shadow-card-md">
+            <h1 className="text-xl font-bold text-navy mb-1">Choose a workspace</h1>
+            <p className="text-navy-500 text-sm mb-5">Your account belongs to more than one company. Pick one to continue.</p>
+            <div className="space-y-2">
+              {workspaceChoice.workspaces.map((w) => (
+                <button key={w.userId} onClick={() => handleSelectWorkspace(w.userId)} disabled={submitting}
+                  className="w-full flex items-center justify-between gap-3 px-4 py-3 rounded-xl border border-navy-200 hover:border-brand hover:bg-brand-50 transition-all text-left disabled:opacity-60">
+                  <span>
+                    <span className="block text-sm font-semibold text-navy">{w.name}</span>
+                    <span className="block text-xs text-navy-400 capitalize">{(w.role || '').replace('_', ' ')}</span>
+                  </span>
+                  <span className="text-brand">→</span>
+                </button>
+              ))}
+            </div>
+            <button onClick={() => setWorkspaceChoice(null)} className="mt-5 text-sm text-navy-500 hover:text-navy">← Back to sign in</button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-bg flex items-center justify-center p-4">
