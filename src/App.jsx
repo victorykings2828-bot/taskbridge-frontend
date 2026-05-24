@@ -11,6 +11,10 @@ import LoginPage               from './pages/LoginPage';
 import RegisterPage            from './pages/RegisterPage';
 import SetupAccountPage        from './pages/SetupAccountPage';
 import GoogleSignupComplete    from './pages/GoogleSignupComplete';
+import TermsPage               from './pages/TermsPage';
+import PrivacyPage             from './pages/PrivacyPage';
+import RefundPage              from './pages/RefundPage';
+import ContactPage             from './pages/ContactPage';
 import ForgotPasswordPage      from './pages/ForgotPasswordPage';
 import ResetPasswordPage       from './pages/ResetPasswordPage';
 import AnalyticsPage           from './pages/AnalyticsPage';
@@ -60,6 +64,12 @@ function App() {
           <Route path="/forgot-password"         element={<ForgotPasswordPage />} />
           <Route path="/reset-password/:token"   element={<ResetPasswordPage />} />
           <Route path="/auth/google/success" element={<GoogleAuthSuccess />} />
+
+          {/* ── Legal / policy pages (required by Razorpay) ── */}
+          <Route path="/terms"   element={<TermsPage />} />
+          <Route path="/privacy" element={<PrivacyPage />} />
+          <Route path="/refund"  element={<RefundPage />} />
+          <Route path="/contact" element={<ContactPage />} />
 
           {/* ── Force password change ── */}
           <Route path="/change-password" element={

@@ -265,10 +265,11 @@ const LandingPage = () => {
             <span className="text-white font-bold">TaskBridge</span>
           </div>
           <p className="text-navy-500 text-sm">© {new Date().getFullYear()} TaskBridge. All rights reserved.</p>
-          <div className="flex items-center gap-4">
-            <a href="#" className="text-navy-500 hover:text-navy-400 text-sm">Privacy</a>
-            <a href="#" className="text-navy-500 hover:text-navy-400 text-sm">Terms</a>
-            <a href="#" className="text-navy-500 hover:text-navy-400 text-sm">Contact</a>
+          <div className="flex items-center flex-wrap gap-4">
+            <Link to="/privacy" className="text-navy-500 hover:text-navy-400 text-sm">Privacy</Link>
+            <Link to="/terms" className="text-navy-500 hover:text-navy-400 text-sm">Terms</Link>
+            <Link to="/refund" className="text-navy-500 hover:text-navy-400 text-sm">Refund</Link>
+            <Link to="/contact" className="text-navy-500 hover:text-navy-400 text-sm">Contact</Link>
           </div>
         </div>
       </footer>
