@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import api from '../utils/api';
 import { getInitials, generateAvatarColor, formatDate, timeAgo } from '../utils/helpers';
 import { PriorityBadge, StatusBadge } from '../components/common/Badge';
+import { StarIcon } from '../components/common/icons';
 import toast from 'react-hot-toast';
 
 const StarRating = ({ value, onChange, readonly = false }) => (
@@ -235,7 +236,7 @@ const AdminEmployeeProfilePage = () => {
         <div className="space-y-3">
           {feedbacks.length === 0 ? (
             <div className="text-center py-12 bg-surface rounded-2xl border border-navy-200">
-              <div className="text-4xl mb-3">⭐</div>
+              <div className="w-14 h-14 rounded-2xl bg-surface-2 text-navy-400 flex items-center justify-center mx-auto mb-4 ring-1 ring-navy-200"><StarIcon size={26} /></div>
               <p className="text-navy-400 text-sm">No feedback received yet</p>
             </div>
           ) : feedbacks.map(fb => (

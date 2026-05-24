@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import api from '../utils/api';
 import { getInitials, generateAvatarColor } from '../utils/helpers';
 import { TableSkeleton } from '../components/common/Skeleton';
+import { UsersIcon } from '../components/common/icons';
 
 const WorkloadPage = () => {
   const [workload, setWorkload] = useState([]);
@@ -30,7 +31,7 @@ const WorkloadPage = () => {
         <div className="space-y-4"><TableSkeleton rows={5} /></div>
       ) : workload.length === 0 ? (
         <div className="text-center py-16 bg-surface rounded-2xl border border-navy-200">
-          <div className="text-5xl mb-3">👥</div>
+          <div className="w-14 h-14 rounded-2xl bg-surface-2 text-navy-400 flex items-center justify-center mx-auto mb-4 ring-1 ring-navy-200"><UsersIcon size={26} /></div>
           <p className="text-navy-500">No team members yet. Add employees first.</p>
         </div>
       ) : (

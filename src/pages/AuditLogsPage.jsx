@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import api from '../utils/api';
 import { formatDateTime, getInitials, generateAvatarColor } from '../utils/helpers';
 import { TableSkeleton } from '../components/common/Skeleton';
+import { ClipboardIcon } from '../components/common/icons';
 
 const ACTION_LABELS = {
   USER_LOGIN:          { label: 'User Login',          color: 'bg-blue-50 text-blue-600' },
@@ -61,7 +62,7 @@ const AuditLogsPage = () => {
           <div className="p-6"><TableSkeleton rows={8} /></div>
         ) : logs.length === 0 ? (
           <div className="text-center py-16">
-            <div className="text-5xl mb-3">📋</div>
+            <div className="w-14 h-14 rounded-2xl bg-surface-2 text-navy-400 flex items-center justify-center mx-auto mb-4 ring-1 ring-navy-200"><ClipboardIcon size={26} /></div>
             <p className="text-navy-500">No audit logs yet</p>
           </div>
         ) : (

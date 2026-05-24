@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import api from '../utils/api';
 import { getInitials, generateAvatarColor, formatDate } from '../utils/helpers';
 import { TableSkeleton } from '../components/common/Skeleton';
+import { UserIcon } from '../components/common/icons';
 
 const StarDisplay = ({ rating }) => (
   <span className="text-amber-400 font-semibold text-sm">
@@ -64,7 +65,7 @@ const AdminEmployeesPage = () => {
         <div className="bg-surface rounded-2xl border border-navy-200 shadow-card overflow-hidden">
           {filtered.length === 0 ? (
             <div className="text-center py-16">
-              <div className="text-5xl mb-3">👤</div>
+              <div className="w-14 h-14 rounded-2xl bg-surface-2 text-navy-400 flex items-center justify-center mx-auto mb-4 ring-1 ring-navy-200"><UserIcon size={26} /></div>
               <p className="text-navy-500">No employees found</p>
             </div>
           ) : (

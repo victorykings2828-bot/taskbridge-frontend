@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import api from '../utils/api';
 import { TableSkeleton } from '../components/common/Skeleton';
+import { UsersIcon } from '../components/common/icons';
 import { formatDate, getInitials, generateAvatarColor, ROLE_LABELS } from '../utils/helpers';
 import toast from 'react-hot-toast';
 
@@ -174,7 +175,7 @@ const AccountManagement = () => {
           <div className="p-6"><TableSkeleton rows={5} /></div>
         ) : filtered.length === 0 ? (
           <div className="text-center py-16">
-            <div className="text-5xl mb-3">👥</div>
+            <div className="w-14 h-14 rounded-2xl bg-surface-2 text-navy-400 flex items-center justify-center mx-auto mb-4 ring-1 ring-navy-200"><UsersIcon size={26} /></div>
             <p className="text-navy-500 font-medium">
               {search ? 'No results found' : `No ${ROLE_LABELS[targetRole].toLowerCase()}s yet`}
             </p>

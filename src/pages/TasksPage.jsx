@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import api from '../utils/api';
 import { PriorityBadge, StatusBadge } from '../components/common/Badge';
 import { TableSkeleton } from '../components/common/Skeleton';
+import { ClipboardIcon } from '../components/common/icons';
 import { formatDate, getInitials, generateAvatarColor } from '../utils/helpers';
 
 const STATUS_FILTERS = ['all', 'not_started', 'in_progress', 'under_review', 'completed', 'overdue'];
@@ -92,7 +93,7 @@ const TasksPage = () => {
           <div className="p-6"><TableSkeleton rows={8} /></div>
         ) : filtered.length === 0 ? (
           <div className="text-center py-16">
-            <div className="text-5xl mb-3">📋</div>
+            <div className="w-14 h-14 rounded-2xl bg-surface-2 text-navy-400 flex items-center justify-center mx-auto mb-4 ring-1 ring-navy-200"><ClipboardIcon size={26} /></div>
             <p className="text-navy-500 font-medium">No tasks found</p>
             {user?.role === 'manager' && (
               <Link to="/tasks/create" className="mt-3 inline-block text-sm text-brand font-medium hover:underline">

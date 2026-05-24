@@ -25,3 +25,4 @@ export const ChartIcon       = (p) => <S {...p}><path d="M3 3v18h18"/><path d="M
 export const TargetIcon      = (p) => <S {...p}><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/></S>;
 export const BellIcon        = (p) => <S {...p}><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></S>;
 export const LockIcon        = (p) => <S {...p}><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></S>;
+export const ChatIcon        = (p) => <S {...p}><path d="M21 11.5a8.38 8.38 0 01-9 8.5 8.5 8.5 0 01-3.9-.9L3 21l1.9-5.1A8.5 8.5 0 0112 3a8.38 8.38 0 019 8.5z"/></S>;

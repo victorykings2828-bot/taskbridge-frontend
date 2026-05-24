@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import api from '../utils/api';
 import { TableSkeleton } from '../components/common/Skeleton';
+import { BellIcon } from '../components/common/icons';
 import { timeAgo } from '../utils/helpers';
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
@@ -100,7 +101,7 @@ const NotificationsPage = () => {
           <div className="p-6"><TableSkeleton rows={6} /></div>
         ) : displayed.length === 0 ? (
           <div className="text-center py-16">
-            <div className="text-5xl mb-3">🔔</div>
+            <div className="w-14 h-14 rounded-2xl bg-surface-2 text-navy-400 flex items-center justify-center mx-auto mb-4 ring-1 ring-navy-200"><BellIcon size={26} /></div>
             <p className="text-navy-500 font-medium">
               {filter === 'unread' ? 'No unread notifications' : 'No notifications yet'}
             </p>

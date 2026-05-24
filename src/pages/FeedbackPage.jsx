@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import api from '../utils/api';
 import { formatDate, getInitials, generateAvatarColor } from '../utils/helpers';
 import { TableSkeleton } from '../components/common/Skeleton';
+import { StarIcon, ChatIcon, CheckCircleIcon } from '../components/common/icons';
 import toast from 'react-hot-toast';
 
 const StarRating = ({ value, onChange, readonly = false }) => (
@@ -165,7 +166,7 @@ const FeedbackPage = () => {
       ) : tab === 'received' ? (
         receivedFeedbacks.length === 0 ? (
           <div className="text-center py-16 bg-surface rounded-2xl border border-navy-200">
-            <div className="text-5xl mb-3">⭐</div>
+            <div className="w-14 h-14 rounded-2xl bg-surface-2 text-navy-400 flex items-center justify-center mx-auto mb-4 ring-1 ring-navy-200"><StarIcon size={26} /></div>
             <p className="text-navy-500">No feedback received yet</p>
           </div>
         ) : (
@@ -176,7 +177,7 @@ const FeedbackPage = () => {
       ) : tab === 'given' ? (
         givenFeedbacks.length === 0 ? (
           <div className="text-center py-16 bg-surface rounded-2xl border border-navy-200">
-            <div className="text-5xl mb-3">💬</div>
+            <div className="w-14 h-14 rounded-2xl bg-surface-2 text-navy-400 flex items-center justify-center mx-auto mb-4 ring-1 ring-navy-200"><ChatIcon size={26} /></div>
             <p className="text-navy-500">You haven't given any feedback yet</p>
           </div>
         ) : (
@@ -187,7 +188,7 @@ const FeedbackPage = () => {
       ) : (
         pendingFeedbackTasks.length === 0 ? (
           <div className="text-center py-16 bg-surface rounded-2xl border border-navy-200">
-            <div className="text-5xl mb-3">✅</div>
+            <div className="w-14 h-14 rounded-2xl bg-surface-2 text-navy-400 flex items-center justify-center mx-auto mb-4 ring-1 ring-navy-200"><CheckCircleIcon size={26} /></div>
             <p className="text-navy-500 font-medium">All caught up!</p>
             <p className="text-navy-400 text-sm mt-1">No completed tasks waiting for feedback</p>
           </div>
