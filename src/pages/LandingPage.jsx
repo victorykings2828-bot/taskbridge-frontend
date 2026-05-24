@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../utils/api';
+import ThemeToggle from '../components/common/ThemeToggle';
 
 // A pricing card with a collapsible feature list. Collapsed it shows the top
 // features; expanded it reveals the rest plus a "Not included" list so visitors
@@ -145,7 +146,7 @@ const LandingPage = () => {
     <div className="min-h-screen bg-bg font-sans">
 
       {/* ── Navbar ── */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${scrolled ? 'bg-white/95 backdrop-blur border-b border-navy-200 shadow-sm' : 'bg-transparent'}`}>
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${scrolled ? 'bg-surface/95 backdrop-blur border-b border-navy-200 shadow-sm' : 'bg-transparent'}`}>
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-brand flex items-center justify-center">
@@ -161,6 +162,7 @@ const LandingPage = () => {
             <a href="#how-it-works" className={`text-sm font-medium transition-colors ${scrolled ? 'text-navy-600 hover:text-navy' : 'text-white/80 hover:text-white'}`}>How it works</a>
           </div>
           <div className="flex items-center gap-3">
+            <ThemeToggle variant="ghost" className={scrolled ? '' : 'bg-white/10 border-white/20 text-white hover:text-white hover:bg-white/20'} />
             <Link to="/login" className={`text-sm font-medium transition-colors ${scrolled ? 'text-navy-600 hover:text-navy' : 'text-white/80 hover:text-white'}`}>Sign in</Link>
             <Link to="/register" className="bg-brand hover:bg-brand-dark text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors">
               Get started free

@@ -3,22 +3,123 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Theme tokens (RGB triplets so Tailwind's /alpha modifiers work) ──────── */
+:root {
+  --c-bg:        248 250 252;
+  --c-surface:   255 255 255;
+  --c-surface-2: 241 245 249;
+
+  --c-navy:     15 23 42;
+  --c-navy-800: 30 41 59;
+  --c-navy-700: 51 65 85;
+  --c-navy-600: 71 85 105;
+  --c-navy-500: 100 116 139;
+  --c-navy-400: 148 163 184;
+  --c-navy-200: 226 232 240;
+  --c-navy-100: 241 245 249;
+
+  --c-brand:       14 165 233;
+  --c-brand-dark:  2 132 199;
+  --c-brand-light: 56 189 248;
+  --c-brand-50:    240 249 255;
+  --c-brand-100:   224 242 254;
+
+  --c-success: 16 185 129;
+  --c-warning: 245 158 11;
+  --c-danger:  239 68 68;
+  --c-info:    99 102 241;
+
+  --shadow-card:    0 1px 3px 0 rgb(0 0 0 / 0.07), 0 1px 2px -1px rgb(0 0 0 / 0.07);
+  --shadow-card-md: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.07);
+  --shadow-card-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.05);
+
+  --scrollbar-track: #f1f5f9;
+  --scrollbar-thumb: #cbd5e1;
+}
+
+.dark {
+  --c-bg:        9 14 26;     /* deep navy-black page */
+  --c-surface:   20 27 45;    /* cards */
+  --c-surface-2: 30 41 64;    /* insets / hover */
+
+  /* navy scale inverts: text becomes light, borders become dark */
+  --c-navy:     241 245 249;  /* headings — near white */
+  --c-navy-800: 226 232 240;
+  --c-navy-700: 203 213 225;  /* body text */
+  --c-navy-600: 168 181 199;
+  --c-navy-500: 148 163 184;  /* muted */
+  --c-navy-400: 116 130 151;  /* more muted */
+  --c-navy-200: 42 54 78;     /* borders (visible on surface) */
+  --c-navy-100: 32 42 64;     /* subtle bg / hover */
+
+  --c-brand:       56 189 248;  /* brighter brand pops on dark */
+  --c-brand-dark:  14 165 233;
+  --c-brand-light: 125 211 252;
+  --c-brand-50:    13 32 54;    /* dark blue tint for highlight backgrounds */
+  --c-brand-100:   16 40 66;
+
+  --c-success: 52 211 153;
+  --c-warning: 251 191 36;
+  --c-danger:  248 113 113;
+  --c-info:    129 140 248;
+
+  --shadow-card:    0 1px 3px 0 rgb(0 0 0 / 0.5), 0 1px 2px -1px rgb(0 0 0 / 0.4);
+  --shadow-card-md: 0 6px 14px -4px rgb(0 0 0 / 0.55);
+  --shadow-card-lg: 0 16px 32px -8px rgb(0 0 0 / 0.6);
+
+  --scrollbar-track: #0e1626;
+  --scrollbar-thumb: #334155;
+}
+
 @layer base {
   * { box-sizing: border-box; }
+  html { background-color: rgb(var(--c-bg)); }
   body {
     font-family: 'Inter', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: #F8FAFC;
-    color: #1e293b;
+    background-color: rgb(var(--c-bg));
+    color: rgb(var(--c-navy-700));
   }
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { background: #f1f5f9; }
-  ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+  ::-webkit-scrollbar { width: 7px; height: 7px; }
+  ::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+  ::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: #64748b; }
 }
 
 @layer utilities {
   .animate-fade-in { animation: fadeIn 0.25s ease-out; }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 }
+
+/* ── Dark-mode tints for default Tailwind palette accents (badges, stat tiles,
+   status pills) so they look native instead of bright-on-dark. Components keep
+   their existing classes; we just retune the value under .dark. ───────────── */
+.dark .bg-green-50,  .dark .bg-emerald-50 { background-color: rgb(16 185 129 / 0.14) !important; }
+.dark .bg-red-50,    .dark .bg-rose-50    { background-color: rgb(239 68 68 / 0.14) !important; }
+.dark .bg-amber-50,  .dark .bg-yellow-50  { background-color: rgb(245 158 11 / 0.14) !important; }
+.dark .bg-orange-50                       { background-color: rgb(249 115 22 / 0.14) !important; }
+.dark .bg-blue-50                         { background-color: rgb(59 130 246 / 0.14) !important; }
+.dark .bg-green-100, .dark .bg-emerald-100{ background-color: rgb(16 185 129 / 0.18) !important; }
+.dark .bg-red-100                         { background-color: rgb(239 68 68 / 0.18) !important; }
+.dark .bg-amber-100, .dark .bg-yellow-100 { background-color: rgb(245 158 11 / 0.18) !important; }
+.dark .bg-blue-100                        { background-color: rgb(59 130 246 / 0.18) !important; }
+
+.dark .border-green-100, .dark .border-green-200   { border-color: rgb(16 185 129 / 0.30) !important; }
+.dark .border-red-100,   .dark .border-red-200     { border-color: rgb(239 68 68 / 0.30) !important; }
+.dark .border-amber-100, .dark .border-amber-200   { border-color: rgb(245 158 11 / 0.30) !important; }
+.dark .border-orange-100,.dark .border-orange-200  { border-color: rgb(249 115 22 / 0.30) !important; }
+.dark .border-blue-100,  .dark .border-blue-200    { border-color: rgb(59 130 246 / 0.30) !important; }
+
+/* brighten the accent text so it reads on the tinted dark chips */
+.dark .text-green-600,  .dark .text-green-700,  .dark .text-emerald-600 { color: rgb(52 211 153) !important; }
+.dark .text-red-500,    .dark .text-red-600                            { color: rgb(248 113 113) !important; }
+.dark .text-amber-600,  .dark .text-amber-700,  .dark .text-yellow-600 { color: rgb(251 191 36) !important; }
+.dark .text-orange-600, .dark .text-orange-700                         { color: rgb(251 146 60) !important; }
+.dark .text-blue-600,   .dark .text-blue-700                           { color: rgb(96 165 250) !important; }
+.dark .text-green-800   { color: rgb(110 231 183) !important; }
+.dark .text-amber-800   { color: rgb(252 211 77) !important; }
+.dark .text-blue-800    { color: rgb(147 197 253) !important; }
+
+/* gentle transition when switching themes */
+body, .bg-surface, .bg-bg { transition: background-color 0.2s ease, border-color 0.2s ease; }

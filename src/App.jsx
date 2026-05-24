@@ -48,9 +48,15 @@ function App() {
           position="top-right"
           toastOptions={{
             duration: 3500,
-            style: { borderRadius: '10px', fontSize: '14px', fontFamily: 'Inter, sans-serif', boxShadow: '0 4px 12px rgb(0 0 0 / 0.1)' },
-            success: { style: { background: '#f0fdf4', color: '#166534', border: '1px solid #bbf7d0' } },
-            error:   { style: { background: '#fef2f2', color: '#991b1b', border: '1px solid #fecaca' } },
+            // Theme-aware via CSS variables so toasts adapt to light/dark.
+            style: {
+              borderRadius: '10px', fontSize: '14px', fontFamily: 'Inter, sans-serif',
+              background: 'rgb(var(--c-surface))', color: 'rgb(var(--c-navy))',
+              border: '1px solid rgb(var(--c-navy-200))',
+              boxShadow: 'var(--shadow-card-md)',
+            },
+            success: { iconTheme: { primary: 'rgb(var(--c-success))', secondary: '#fff' } },
+            error:   { iconTheme: { primary: 'rgb(var(--c-danger))',  secondary: '#fff' } },
           }}
         />
 

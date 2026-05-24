@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { getInitials, ROLE_LABELS } from '../../utils/helpers';
+import ThemeToggle from '../common/ThemeToggle';
 import toast from 'react-hot-toast';
 
 const NAV_ITEMS = {
@@ -65,7 +66,7 @@ const Sidebar = ({ unreadCount = 0 }) => {
   const Content = () => (
     <div className="flex flex-col h-full">
       {/* Logo */}
-      <div className="px-5 py-5 border-b border-navy-800">
+      <div className="px-5 py-5 border-b border-slate-800">
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-lg bg-brand flex items-center justify-center flex-shrink-0">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -74,7 +75,7 @@ const Sidebar = ({ unreadCount = 0 }) => {
           </div>
           <div className="min-w-0">
             <p className="text-white font-bold text-sm leading-none">TaskBridge</p>
-            <p className="text-navy-400 text-xs mt-0.5 truncate">{user?.organizationName || roleLabel}</p>
+            <p className="text-slate-400 text-xs mt-0.5 truncate">{user?.organizationName || roleLabel}</p>
           </div>
         </div>
       </div>
@@ -93,13 +94,13 @@ const Sidebar = ({ unreadCount = 0 }) => {
                 `flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all group ${
                   isActive
                     ? 'bg-brand text-white shadow-sm shadow-brand/30'
-                    : 'text-navy-400 hover:bg-navy-800 hover:text-white'
+                    : 'text-slate-400 hover:bg-slate-800 hover:text-white'
                 }`
               }
             >
               {({ isActive }) => (
                 <>
-                  <span className={`flex-shrink-0 ${isActive ? 'text-white' : 'text-navy-500 group-hover:text-white'}`}>
+                  <span className={`flex-shrink-0 ${isActive ? 'text-white' : 'text-slate-500 group-hover:text-white'}`}>
                     <Icon />
                   </span>
                   <span className="flex-1">{item.label}</span>
@@ -115,18 +116,22 @@ const Sidebar = ({ unreadCount = 0 }) => {
         })}
       </nav>
 
-      {/* User card */}
-      <div className="p-3 border-t border-navy-800">
-        <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-navy-800 group transition-all">
+      {/* Footer */}
+      <div className="p-3 border-t border-slate-800 space-y-1.5">
+        <div className="flex items-center justify-between pl-3 pr-1">
+          <span className="text-slate-500 text-xs font-medium">Appearance</span>
+          <ThemeToggle variant="sidebar" />
+        </div>
+        <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-800 group transition-all">
           <div className="w-8 h-8 rounded-full bg-brand flex items-center justify-center flex-shrink-0 text-white text-xs font-bold">
             {user?.avatar ? <img src={user.avatar} alt="" className="w-full h-full rounded-full object-cover" /> : initials}
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-white text-xs font-medium truncate">{user?.name}</p>
-            <p className="text-navy-500 text-xs truncate capitalize">{roleLabel}</p>
+            <p className="text-slate-500 text-xs truncate capitalize">{roleLabel}</p>
           </div>
           <button onClick={handleLogout} title="Sign out"
-            className="text-navy-600 hover:text-danger transition-colors flex-shrink-0 opacity-0 group-hover:opacity-100">
+            className="text-slate-500 hover:text-danger transition-colors flex-shrink-0 opacity-0 group-hover:opacity-100">
             <LogoutIcon />
           </button>
         </div>
@@ -137,12 +142,12 @@ const Sidebar = ({ unreadCount = 0 }) => {
   return (
     <>
       {/* Desktop sidebar */}
-      <aside className="hidden lg:flex fixed left-0 top-0 h-full w-60 flex-col bg-navy z-30">
+      <aside className="hidden lg:flex fixed left-0 top-0 h-full w-60 flex-col bg-slate-900 z-30">
         <Content />
       </aside>
 
       {/* Mobile hamburger */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-40 bg-navy border-b border-navy-800 px-4 h-14 flex items-center justify-between">
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-40 bg-slate-900 border-b border-slate-800 px-4 h-14 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-lg bg-brand flex items-center justify-center">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
@@ -161,8 +166,8 @@ const Sidebar = ({ unreadCount = 0 }) => {
       {mobileOpen && (
         <div className="lg:hidden fixed inset-0 z-50 flex">
           <div className="absolute inset-0 bg-black/50" onClick={() => setMobileOpen(false)} />
-          <aside className="relative w-64 bg-navy h-full shadow-xl">
-            <button onClick={() => setMobileOpen(false)} className="absolute top-4 right-4 text-navy-400 hover:text-white transition-colors">
+          <aside className="relative w-64 bg-slate-900 h-full shadow-xl">
+            <button onClick={() => setMobileOpen(false)} className="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
             </button>
             <Content />
