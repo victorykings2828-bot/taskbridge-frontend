@@ -6,6 +6,14 @@ import { PriorityBadge, StatusBadge } from '../components/common/Badge';
 import { formatDateTime, formatDate, timeAgo, getInitials, generateAvatarColor } from '../utils/helpers';
 import toast from 'react-hot-toast';
 
+// A stored file has a real http(s) URL. "mock://" means storage isn't configured.
+const isStored = (url) => /^https?:\/\//.test(url || '');
+// Force a download (not in-browser view) for Cloudinary-hosted files.
+const toDownloadUrl = (url) =>
+  /res\.cloudinary\.com/.test(url) && url.includes('/upload/')
+    ? url.replace('/upload/', '/upload/fl_attachment/')
+    : url;
+
 const TaskDetailPage = () => {
   const { id } = useParams();
   const { user } = useAuth();
@@ -168,8 +176,10 @@ const TaskDetailPage = () => {
 
   if (!task) return null;
 
-  const isAssignee  = user?.role === 'employee' && task.assignedTo?._id === user?._id;
-  const isManager   = user?.role === 'manager' && task.assignedBy?._id === user?._id;
+  // Assignee = whoever the task is assigned to (an employee, OR a manager that a
+  // super admin assigned it to). Assigner = the manager/super-admin who created it.
+  const isAssignee = task.assignedTo?._id === user?._id;
+  const isAssigner = (user?.role === 'manager' || user?.role === 'super_admin') && task.assignedBy?._id === user?._id;
 
   return (
     <div className="animate-fade-in max-w-3xl">
@@ -340,7 +350,7 @@ const TaskDetailPage = () => {
       )}
 
       {/* Manager - Edit/Cancel task (only before accepted) */}
-      {isManager && task.status === 'not_started' && (
+      {isAssigner && task.status === 'not_started' && (
         <div className="bg-surface rounded-2xl shadow-card border border-navy-200 p-6 mb-5">
           <h2 className="text-base font-semibold text-navy mb-4">Manage Task</h2>
           <div className="flex flex-wrap gap-3">
@@ -359,7 +369,7 @@ const TaskDetailPage = () => {
       )}
 
       {/* Manager - Extension request pending */}
-      {isManager && task.extensionStatus === 'pending' && (
+      {isAssigner && task.extensionStatus === 'pending' && (
         <div className="bg-blue-50 border border-blue-200 rounded-2xl p-5 mb-5">
           <p className="text-sm font-semibold text-blue-800 mb-1">📅 Deadline Extension Requested</p>
           <p className="text-sm text-blue-700 mb-1">
@@ -380,7 +390,7 @@ const TaskDetailPage = () => {
       )}
 
       {/* Manager Review Actions */}
-      {isManager && task.status === 'under_review' && (
+      {isAssigner && task.status === 'under_review' && (
         <div className="bg-surface rounded-2xl shadow-card border border-navy-200 p-6 mb-5">
           <h2 className="text-base font-semibold text-navy mb-2">Review Submission</h2>
           <p className="text-sm text-navy-500 mb-4">Employee has submitted this task. Please review and decide.</p>
@@ -410,7 +420,7 @@ const TaskDetailPage = () => {
       )}
 
       {/* Manager - task is flagged notice */}
-      {isManager && task.isFlagged && task.status === 'not_started' && (
+      {isAssigner && task.isFlagged && task.status === 'not_started' && (
         <div className="bg-orange-50 border border-orange-200 rounded-2xl p-5 mb-5">
           <p className="text-sm font-semibold text-orange-800 mb-1">🚩 Employee flagged this task</p>
           <p className="text-sm text-orange-700">{task.flagReason}</p>
@@ -419,12 +429,12 @@ const TaskDetailPage = () => {
       )}
 
       {/* Files & Deliverables */}
-      {(task.files?.length > 0 || task.deliverables?.length > 0 || isManager || isAssignee) && (
+      {(task.files?.length > 0 || task.deliverables?.length > 0 || isAssigner || isAssignee) && (
         <div className="bg-surface rounded-2xl shadow-card border border-navy-200 p-6 mb-5">
           <h2 className="text-base font-semibold text-navy mb-4">Files & Deliverables</h2>
 
           {/* Manager: task attachments */}
-          {(task.files?.length > 0 || isManager) && (
+          {(task.files?.length > 0 || isAssigner) && (
             <div className="mb-4">
               <p className="text-xs font-semibold text-navy-500 uppercase tracking-wide mb-2">Task Attachments</p>
               {task.files?.length > 0 ? (
@@ -433,9 +443,11 @@ const TaskDetailPage = () => {
                     <div key={i} className="flex items-center gap-3 p-3 bg-surface-2 rounded-xl border border-navy-200">
                       <span className="text-lg">📎</span>
                       <span className="text-sm text-navy flex-1 truncate">{f.name}</span>
-                      {!f.url.startsWith('mock://') && (
-                        <a href={f.url} target="_blank" rel="noreferrer"
+                      {isStored(f.url) ? (
+                        <a href={toDownloadUrl(f.url)} target="_blank" rel="noreferrer" download={f.name}
                           className="text-xs text-brand hover:underline font-medium">Download</a>
+                      ) : (
+                        <span className="text-xs text-navy-400" title="Configure Cloudinary to store files">Not stored</span>
                       )}
                     </div>
                   ))}
@@ -443,7 +455,7 @@ const TaskDetailPage = () => {
               ) : (
                 <p className="text-sm text-navy-400 mb-3">No attachments yet</p>
               )}
-              {isManager && (
+              {isAssigner && (
                 <label className="inline-flex items-center gap-2 px-4 py-2 bg-surface-2 border border-navy-200 text-sm font-medium text-navy-600 rounded-xl hover:bg-navy-100 cursor-pointer transition-all">
                   <span>📎</span> Attach File
                   <input type="file" className="hidden" onChange={async (e) => {
@@ -473,9 +485,11 @@ const TaskDetailPage = () => {
                     <div key={i} className="flex items-center gap-3 p-3 bg-green-50 rounded-xl border border-green-100">
                       <span className="text-lg">📄</span>
                       <span className="text-sm text-navy flex-1 truncate">{f.name}</span>
-                      {!f.url.startsWith('mock://') && (
-                        <a href={f.url} target="_blank" rel="noreferrer"
+                      {isStored(f.url) ? (
+                        <a href={toDownloadUrl(f.url)} target="_blank" rel="noreferrer" download={f.name}
                           className="text-xs text-brand hover:underline font-medium">Download</a>
+                      ) : (
+                        <span className="text-xs text-navy-400" title="Configure Cloudinary to store files">Not stored</span>
                       )}
                     </div>
                   ))}
