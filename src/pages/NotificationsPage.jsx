@@ -69,14 +69,14 @@ const NotificationsPage = () => {
             {unreadCount > 0 ? `${unreadCount} unread notification${unreadCount > 1 ? 's' : ''}` : 'All caught up!'}
           </p>
         </div>
-        {unreadCount > 0 && (
-          <button
-            onClick={markAllRead}
-            className="text-sm text-brand hover:text-brand-dark font-medium border border-brand/30 px-4 py-2 rounded-xl hover:bg-brand-50 transition-all"
-          >
-            Mark all as read
-          </button>
-        )}
+        <button
+          onClick={markAllRead}
+          disabled={unreadCount === 0}
+          className="inline-flex items-center gap-2 text-sm text-brand hover:text-brand-dark font-medium border border-brand/30 px-4 py-2 rounded-xl hover:bg-brand-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+        >
+          <CheckCircleIcon size={16} />
+          Mark all as read
+        </button>
       </div>
 
       {/* Filter tabs */}
