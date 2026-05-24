@@ -31,13 +31,13 @@ const PLANS = [
   {
     id: 'pro', name: 'Pro', price: 1249, priceLabel: '₹1,249/mo', highlighted: true, badge: 'Most Popular',
     description: 'Everything a growing team needs',
-    limits: '5 managers · 100 employees each',
-    features: ['Up to 5 Managers','Up to 100 employees per manager','Task priority (High/Med/Low)','Team workload overview','Feedback & 5-star ratings','Performance dashboards','Deadline overdue alerts','Task revision workflow','Employee performance history'],
+    limits: '5 managers · 20 employees each',
+    features: ['Up to 5 Managers','Up to 20 employees per manager','Task priority (High/Med/Low)','Team workload overview','Feedback & 5-star ratings','Performance dashboards','Deadline overdue alerts','Task revision workflow','Employee performance history'],
     notIncluded: ['Audit logs & export','Custom branding'],
   },
   {
-    id: 'enterprise', name: 'Enterprise', price: 6499, priceLabel: '₹6,499/mo', highlighted: false, badge: null,
-    description: 'Unlimited scale, complete visibility',
+    id: 'enterprise', name: 'Enterprise', price: null, priceLabel: 'Custom', highlighted: false, badge: null,
+    description: 'A custom plan built around your requirements',
     limits: 'Unlimited managers & employees',
     features: ['Everything in Pro','Unlimited managers','Unlimited employees','Full audit log & export','Cross-team workload balancing','Manager benchmarking','Custom company branding','Priority support'],
     notIncluded: [],
@@ -240,7 +240,8 @@ export default function SubscriptionPage() {
             {PLANS.map((plan) => {
               const isCurrent  = plan.id === currentTier;
               const isDowngrade= plan.id === 'free' && currentTier !== 'free';
-              const isUpgrade  = plan.price && !isCurrent && !isDowngrade;
+              const isContact  = plan.id === 'enterprise' && !isCurrent; // custom / sales-led
+              const isUpgrade  = plan.price && !isCurrent && !isDowngrade && !isContact;
               return (
                 <div key={plan.id} className={`relative rounded-2xl p-5 border bg-surface transition-all ${plan.highlighted ? 'border-brand shadow-card-lg' : 'border-navy-200'} ${isCurrent ? 'ring-2 ring-brand' : ''}`}>
                   {isCurrent && <div className="absolute -top-3 left-4"><span className="bg-brand text-white text-xs font-bold px-3 py-1 rounded-full">Current plan</span></div>}
@@ -277,6 +278,12 @@ export default function SubscriptionPage() {
                         ? <><span className="block w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />Opening payment...</>
                         : `Pay ${plan.priceLabel} →`}
                     </button>
+                  )}
+                  {isContact && (
+                    <a href="mailto:taskbridge111@gmail.com?subject=TaskBridge%20Enterprise%20plan%20enquiry"
+                      className="block w-full py-2 rounded-xl text-xs font-semibold bg-navy text-white hover:bg-navy-800 transition-all text-center">
+                      Contact us for a custom plan
+                    </a>
                   )}
                 </div>
               );

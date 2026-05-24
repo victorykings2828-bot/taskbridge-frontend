@@ -115,8 +115,8 @@ const LandingPage = () => {
     description: p.description,
     features: p.features?.filter(f => f.included).map(f => f.text) || [],
     excluded: p.features?.filter(f => !f.included).map(f => f.text) || [],
-    cta: p.id === 'free' ? 'Get started free' : (p.id === 'pro' ? 'Contact us' : 'Contact us'),
-    ctaLink: p.id === 'free' ? '/register' : 'mailto:hello@taskbridge.io',
+    cta: p.id === 'enterprise' ? 'Contact us for a custom plan' : 'Get started free',
+    ctaLink: p.id === 'enterprise' ? 'mailto:taskbridge111@gmail.com' : '/register',
   })) : [
     {
       id: 'free', name: 'Starter', badge: null, highlighted: false,
@@ -128,16 +128,16 @@ const LandingPage = () => {
     {
       id: 'pro', name: 'Pro', badge: 'Most Popular', highlighted: true,
       description: 'Everything a growing team needs, simple and affordable',
-      features: ['Up to 5 Managers', 'Up to 100 employees per manager', 'Task priority levels', 'Team workload overview', 'Feedback & 5-star ratings', 'Performance dashboards', 'Deadline overdue alerts', 'Task revision workflow'],
+      features: ['Up to 5 Managers', 'Up to 20 employees per manager', 'Task priority levels', 'Team workload overview', 'Feedback & 5-star ratings', 'Performance dashboards', 'Deadline overdue alerts', 'Task revision workflow'],
       excluded: ['Audit logs & export', 'Custom company branding', 'Manager benchmarking'],
-      cta: 'Contact us', ctaLink: 'mailto:hello@taskbridge.io',
+      cta: 'Get started free', ctaLink: '/register',
     },
     {
       id: 'enterprise', name: 'Enterprise', badge: null, highlighted: false,
-      description: 'Unlimited scale and full visibility across your organisation',
+      description: 'A custom plan built around your requirements',
       features: ['Unlimited managers', 'Unlimited employees', 'Everything in Pro', 'Full audit log & export', 'Cross-team workload balancing', 'Manager benchmarking', 'Custom company branding', 'Priority support'],
       excluded: [],
-      cta: 'Contact us', ctaLink: 'mailto:hello@taskbridge.io',
+      cta: 'Contact us for a custom plan', ctaLink: 'mailto:taskbridge111@gmail.com',
     },
   ];
 
