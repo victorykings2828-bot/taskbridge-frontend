@@ -271,7 +271,7 @@ const AccountManagement = () => {
           <div className="relative bg-surface rounded-2xl shadow-2xl w-full max-w-md p-8 animate-fade-in">
             <h2 className="text-xl font-bold text-navy mb-1">Add {ROLE_LABELS[targetRole]}</h2>
             <p className="text-navy-500 text-sm mb-6">
-              A temporary password will be generated — you'll see it on screen after creation.
+              They'll sign in with this email and set their own password on first login.
             </p>
             <form onSubmit={handleCreate} noValidate className="space-y-4">
               {[
