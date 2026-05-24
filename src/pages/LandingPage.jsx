@@ -172,7 +172,7 @@ const LandingPage = () => {
       </nav>
 
       {/* ── Hero ── */}
-      <section className="relative bg-navy min-h-[92vh] flex items-center overflow-hidden">
+      <section className="relative bg-slate-900 min-h-[92vh] flex items-center overflow-hidden">
         {/* Background grid */}
         <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
         {/* Accent blobs */}
@@ -216,7 +216,7 @@ const LandingPage = () => {
                 { name: 'Design landing page', user: 'Priya S.', status: 'In Progress', color: 'bg-brand/20 text-brand' },
                 { name: 'Backend API review', user: 'Marcus T.', status: 'Under Review', color: 'bg-warning/20 text-warning' },
                 { name: 'Database migration', user: 'Anita R.', status: 'Completed', color: 'bg-success/20 text-success' },
-                { name: 'Write test cases', user: 'Dev K.', status: 'Not Started', color: 'bg-navy-700/50 text-navy-400' },
+                { name: 'Write test cases', user: 'Dev K.', status: 'Not Started', color: 'bg-slate-700/50 text-slate-300' },
               ].map((t, i) => (
                 <div key={i} className="flex items-center justify-between py-3 border-b border-white/5 last:border-0">
                   <div>
@@ -252,7 +252,7 @@ const LandingPage = () => {
       </section>
 
       {/* ── How it works ── */}
-      <section id="how-it-works" className="py-24 bg-navy">
+      <section id="how-it-works" className="py-24 bg-slate-900">
         <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-14">
             <span className="text-brand text-sm font-semibold tracking-widest uppercase">How it works</span>
@@ -293,7 +293,7 @@ const LandingPage = () => {
       </section>
 
       {/* ── CTA ── */}
-      <section className="py-20 bg-navy text-center">
+      <section className="py-20 bg-slate-900 text-center">
         <div className="max-w-2xl mx-auto px-6">
           <h2 className="text-3xl font-bold text-white mb-4">Ready to bridge your team?</h2>
           <p className="text-navy-400 mb-8">Join hundreds of teams already using TaskBridge to coordinate their work.</p>
@@ -304,7 +304,7 @@ const LandingPage = () => {
       </section>
 
       {/* ── Footer ── */}
-      <footer className="bg-navy border-t border-navy-800 py-10">
+      <footer className="bg-slate-900 border-t border-navy-800 py-10">
         <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 rounded-lg bg-brand flex items-center justify-center">

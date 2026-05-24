@@ -291,7 +291,7 @@ export default function AnalyticsPage() {
                     <td className="px-6 py-3">
                       <div className="flex items-center justify-end gap-2">
                         <div className="w-16 h-1.5 bg-navy-200 rounded-full overflow-hidden">
-                          <div className="h-full rounded-full bg-navy" style={{ width: `${mgr.rate}%` }} />
+                          <div className="h-full rounded-full bg-brand" style={{ width: `${mgr.rate}%` }} />
                         </div>
                         <span className="text-xs font-semibold text-navy w-8 text-right">{mgr.rate}%</span>
                       </div>
