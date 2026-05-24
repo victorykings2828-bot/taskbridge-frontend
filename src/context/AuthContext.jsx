@@ -36,8 +36,9 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     // Don't fire /auth/refresh on public pages — no session exists yet.
-    const publicPaths = ['/', '/login', '/register', '/join'];
-    const isPublicPage = publicPaths.includes(window.location.pathname);
+    const publicPaths = ['/', '/login', '/register', '/setup-account', '/forgot-password'];
+    const path = window.location.pathname;
+    const isPublicPage = publicPaths.includes(path) || path.startsWith('/reset-password');
     if (isPublicPage) {
       setLoading(false);
       return;

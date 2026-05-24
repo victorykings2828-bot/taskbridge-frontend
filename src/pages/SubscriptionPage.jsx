@@ -47,21 +47,15 @@ const PLANS = [
 export default function SubscriptionPage() {
   const [searchParams] = useSearchParams();
   const [org, setOrg]           = useState(null);
-  const [invites, setInvites]   = useState([]);
   const [loading, setLoading]   = useState(true);
   const [cleaning, setCleaning] = useState(false);
-  const [rotating, setRotating] = useState(false);
   const [paying, setPaying]     = useState('');
   const [tab, setTab]           = useState('overview');
-  const [inviteForm, setInviteForm] = useState({ email: '', role: 'employee' });
   const [extraGB, setExtraGB]   = useState(5);
 
   useEffect(() => {
-    Promise.all([api.get('/org/me'), api.get('/org/invites')])
-      .then(([o, i]) => {
-        if (o.data.success) setOrg(o.data.organization);
-        if (i.data.success) setInvites(i.data.invites);
-      })
+    api.get('/org/me')
+      .then((o) => { if (o.data.success) setOrg(o.data.organization); })
       .catch(() => toast.error('Failed to load workspace info'))
       .finally(() => setLoading(false));
   }, []);
@@ -151,38 +145,6 @@ export default function SubscriptionPage() {
     finally { setCleaning(false); }
   };
 
-  const handleRotate = async () => {
-    if (!window.confirm('Rotate the join code? Current one stops working immediately.')) return;
-    setRotating(true);
-    try {
-      const res = await api.post('/org/joincode/rotate');
-      if (res.data.success) { toast.success('Join code regenerated'); setOrg(p => ({ ...p, joinCode: res.data.joinCode })); }
-    } catch (e) { toast.error('Failed'); }
-    finally { setRotating(false); }
-  };
-
-  const handleInvite = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await api.post('/org/invite', inviteForm);
-      if (res.data.success) {
-        toast.success(`Invite created for ${inviteForm.email}`);
-        setInvites(p => [res.data.invite, ...p]);
-        navigator.clipboard?.writeText(res.data.shareText);
-        toast('Invite message copied to clipboard!', { icon: '📋' });
-        setInviteForm({ email: '', role: 'employee' });
-      }
-    } catch (e) { toast.error(e.response?.data?.message || 'Failed to create invite'); }
-  };
-
-  const handleRevoke = async (id) => {
-    try {
-      await api.delete(`/org/invites/${id}`);
-      setInvites(p => p.map(i => (i._id || i.id) === id ? { ...i, status: 'revoked' } : i));
-      toast.success('Invite revoked');
-    } catch (e) { toast.error('Failed'); }
-  };
-
   if (loading) return <div className="flex items-center justify-center h-64"><div className="w-8 h-8 border-2 border-brand border-t-transparent rounded-full animate-spin" /></div>;
 
   const currentTier = org?.subscriptionTier || 'free';
@@ -192,7 +154,6 @@ export default function SubscriptionPage() {
   const tabs = [
     { id: 'overview', label: 'Overview' },
     { id: 'plans',    label: 'Upgrade' },
-    { id: 'invites',  label: 'Invites' },
     { id: 'storage',  label: `Storage${storageWarn ? ' ⚠' : ''}` },
   ];
 
@@ -232,30 +193,11 @@ export default function SubscriptionPage() {
                 )}
               </div>
               <div className="text-right">
-                <p className="text-xs text-navy-400 uppercase tracking-wide font-medium mb-1">Join code</p>
-                <div className="flex items-center gap-2 justify-end">
-                  <span className="font-mono font-bold text-navy text-xl tracking-[0.3em] bg-brand-50 border border-brand-100 px-3 py-1.5 rounded-lg">{org.joinCode}</span>
-                  <button onClick={() => { navigator.clipboard.writeText(org.joinCode); toast.success('Join code copied!'); }} title="Copy code"
-                    className="p-2 text-navy-400 hover:text-brand border border-navy-200 rounded-lg transition-all">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="13" height="13" rx="2" stroke="currentColor" strokeWidth="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" stroke="currentColor" strokeWidth="2"/></svg>
-                  </button>
-                  <button onClick={handleRotate} disabled={rotating} title="Regenerate"
-                    className="p-2 text-navy-400 hover:text-danger border border-navy-200 rounded-lg transition-all">
-                    {rotating
-                      ? <span className="block w-4 h-4 border-2 border-navy-400 border-t-transparent rounded-full animate-spin" />
-                      : <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M1 4v6h6M23 20v-6h-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/><path d="M20.49 9A9 9 0 005.64 5.64L1 10M23 14l-4.64 4.36A9 9 0 013.51 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
-                    }
-                  </button>
-                </div>
-                <p className="text-navy-400 text-xs mt-1">Rotates after each use</p>
-                <button onClick={() => {
-                  const joinUrl = `${window.location.origin}/join`;
-                  navigator.clipboard.writeText(`Join our workspace on TaskBridge!\nJoin link: ${joinUrl}\nCode: ${org.joinCode}`);
-                  toast.success('Join details copied! Share with your team.');
-                }} className="mt-2 text-xs text-brand font-medium hover:text-brand-dark flex items-center gap-1 ml-auto">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                  Copy join link to share
-                </button>
+                <p className="text-xs text-navy-400 uppercase tracking-wide font-medium mb-1">Team</p>
+                <p className="text-sm text-navy">
+                  Add managers & employees in <span className="font-medium">Create Accounts</span>.
+                </p>
+                <p className="text-navy-400 text-xs mt-1">They sign in with their email and set their own password.</p>
               </div>
             </div>
 
@@ -345,47 +287,6 @@ export default function SubscriptionPage() {
             <p>💳 Payments powered by <strong className="text-navy-600">Razorpay</strong> — supports UPI, debit/credit cards, and net banking.</p>
             <p>🔒 Your payment details are encrypted and never stored on our servers.</p>
             <p>📧 Payment receipts are sent to your email automatically.</p>
-          </div>
-        </div>
-      )}
-
-      {/* ── INVITES ── */}
-      {tab === 'invites' && (
-        <div className="space-y-5">
-          <div className="bg-surface border border-navy-200 rounded-2xl p-6 shadow-card">
-            <h3 className="font-semibold text-navy mb-1">Send invite</h3>
-            <p className="text-navy-500 text-xs mb-4">One-time code. Expires in 48 hours.</p>
-            <form onSubmit={handleInvite} className="flex gap-3 flex-wrap">
-              <input type="email" placeholder="employee@company.com" value={inviteForm.email} onChange={e => setInviteForm({...inviteForm, email: e.target.value})} required
-                className="flex-1 min-w-48 px-4 py-2.5 rounded-xl border border-navy-200 text-sm outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand bg-bg" />
-              <select value={inviteForm.role} onChange={e => setInviteForm({...inviteForm, role: e.target.value})}
-                className="px-4 py-2.5 rounded-xl border border-navy-200 text-sm outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand bg-bg text-navy">
-                <option value="employee">Employee</option>
-                <option value="manager">Manager</option>
-              </select>
-              <button type="submit" className="bg-brand hover:bg-brand-dark text-white font-semibold px-5 py-2.5 rounded-xl text-sm transition-colors">Send</button>
-            </form>
-          </div>
-
-          <div className="bg-surface border border-navy-200 rounded-2xl overflow-hidden shadow-card">
-            <div className="px-6 py-4 border-b border-navy-200"><h3 className="font-semibold text-navy">Invite history</h3></div>
-            {invites.length === 0
-              ? <p className="px-6 py-10 text-navy-400 text-sm text-center">No invites sent yet</p>
-              : <div className="divide-y divide-navy-100">
-                  {invites.map(inv => (
-                    <div key={inv._id || inv.id} className="flex items-center justify-between px-6 py-3 gap-4">
-                      <div className="min-w-0">
-                        <p className="text-sm text-navy font-medium truncate">{inv.email}</p>
-                        <p className="text-xs text-navy-400 capitalize">{inv.role} · {new Date(inv.createdAt).toLocaleDateString()}</p>
-                      </div>
-                      <div className="flex items-center gap-3 flex-shrink-0">
-                        <span className={`text-xs font-medium px-2 py-0.5 rounded-full capitalize ${inv.status === 'accepted' ? 'bg-success/10 text-success' : inv.status === 'pending' ? 'bg-brand/10 text-brand' : 'bg-navy-100 text-navy-400'}`}>{inv.status}</span>
-                        {inv.status === 'pending' && <button onClick={() => handleRevoke(inv._id || inv.id)} className="text-xs text-danger hover:underline">Revoke</button>}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-            }
           </div>
         </div>
       )}

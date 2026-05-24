@@ -96,6 +96,11 @@ const LoginPage = () => {
     setSubmitting(true);
     try {
       const data = await login(form.email.trim().toLowerCase(), form.password);
+      if (data.setupRequired) {
+        toast('Welcome! Set a password to finish setting up your account.', { icon: '🔐' });
+        navigate('/setup-account', { replace: true, state: { email: data.email || form.email.trim().toLowerCase() } });
+        return;
+      }
       if (data.requirePasswordChange) {
         toast('Please change your temporary password to continue', { icon: '🔐' });
         navigate('/change-password', { replace: true });
@@ -215,8 +220,7 @@ const LoginPage = () => {
             <Link to="/register" className="text-brand font-semibold hover:text-brand-dark">Create a workspace</Link>
           </p>
           <p className="text-navy-400 text-xs">
-            Employee?{' '}
-            <Link to="/join" className="text-brand hover:text-brand-dark">Join with company code</Link>
+            Invited by your company? Just sign in with your email — you'll set your password on first login.
           </p>
         </div>
 

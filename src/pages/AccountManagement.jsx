@@ -49,13 +49,9 @@ const AccountManagement = () => {
     return Object.keys(e).length === 0;
   };
 
-  const showTempPassword = (name, email, password) => {
-    setCreatedUser({ name, email, tempPassword: password });
+  const showCreatedUser = (name, email) => {
+    setCreatedUser({ name, email });
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    toast.success(
-      `Password for ${name}: ${password}`,
-      { duration: 30000, icon: '🔑', style: { maxWidth: '500px' } }
-    );
   };
 
   const handleCreate = async (e) => {
@@ -68,7 +64,7 @@ const AccountManagement = () => {
         payload.managerId = form.managerId;
       }
       const res = await api.post('/users', payload);
-      showTempPassword(res.data.user.name, res.data.user.email, res.data.tempPassword);
+      showCreatedUser(res.data.user.name, res.data.user.email);
       setShowModal(false);
       setForm({ name: '', email: '', department: '', phone: '', managerId: '' });
       fetchUsers();
@@ -78,10 +74,10 @@ const AccountManagement = () => {
   };
 
   const handleResetPassword = async (u) => {
-    if (!window.confirm(`Reset password for ${u.name}? They will need to change it on next login.`)) return;
+    if (!window.confirm(`Reset password for ${u.name}? Their current password will be cleared and they'll set a new one on next sign-in.`)) return;
     try {
       const res = await api.post(`/users/${u._id}/reset-password`);
-      showTempPassword(u.name, u.email, res.data.tempPassword);
+      toast.success(res.data.message || `${u.name}'s password was reset. They can set a new one on next sign-in.`);
     } catch (err) {
       toast.error(err.response?.data?.message || 'Failed to reset password');
     }
@@ -135,32 +131,26 @@ const AccountManagement = () => {
         </div>
       </div>
 
-      {/* Temp Password Banner */}
+      {/* Account-created Banner */}
       {createdUser && (
         <div className="mb-6 bg-green-50 border border-green-200 rounded-2xl p-5">
           <div className="flex items-start justify-between gap-4">
             <div className="flex-1">
               <p className="text-green-800 font-semibold text-sm mb-1">
-                ✅ {ROLE_LABELS[targetRole]} account created!
+                ✅ {ROLE_LABELS[targetRole]} account created for {createdUser.name}!
               </p>
               <p className="text-green-700 text-sm mb-3">
-                Share these credentials with <strong>{createdUser.name}</strong>:
+                Ask them to sign in with their email — they'll set their own password on first login.
               </p>
-              <div className="bg-surface rounded-xl border border-green-200 p-4 space-y-3">
+              <div className="bg-surface rounded-xl border border-green-200 p-4">
                 <div className="flex items-center gap-3">
                   <span className="text-xs text-navy-500 font-medium w-20">Email</span>
                   <span className="text-sm text-navy font-mono font-semibold flex-1">{createdUser.email}</span>
                   <button onClick={() => { navigator.clipboard.writeText(createdUser.email); toast.success('Copied!'); }}
                     className="text-xs text-brand border border-brand/30 px-2.5 py-1 rounded-lg hover:bg-brand-50">Copy</button>
                 </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-xs text-navy-500 font-medium w-20">Password</span>
-                  <span className="text-sm text-navy font-mono font-semibold flex-1 tracking-wide">{createdUser.tempPassword}</span>
-                  <button onClick={() => { navigator.clipboard.writeText(createdUser.tempPassword); toast.success('Copied!'); }}
-                    className="text-xs text-brand border border-brand/30 px-2.5 py-1 rounded-lg hover:bg-brand-50">Copy</button>
-                </div>
               </div>
-              <p className="text-xs text-amber-600 mt-2 font-medium">⚠ They must change this password on first login.</p>
+              <p className="text-xs text-navy-500 mt-2">An invite email was sent if email delivery is configured.</p>
             </div>
             <button onClick={() => setCreatedUser(null)} className="text-navy-400 hover:text-navy text-2xl leading-none mt-1">×</button>
           </div>

@@ -84,7 +84,6 @@ const LandingPage = () => {
             <a href="#how-it-works" className={`text-sm font-medium transition-colors ${scrolled ? 'text-navy-600 hover:text-navy' : 'text-white/80 hover:text-white'}`}>How it works</a>
           </div>
           <div className="flex items-center gap-3">
-            <Link to="/join" className={`text-sm font-medium transition-colors ${scrolled ? 'text-navy-600 hover:text-navy' : 'text-white/80 hover:text-white'}`}>Join your company</Link>
             <Link to="/login" className={`text-sm font-medium transition-colors ${scrolled ? 'text-navy-600 hover:text-navy' : 'text-white/80 hover:text-white'}`}>Sign in</Link>
             <Link to="/register" className="bg-brand hover:bg-brand-dark text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors">
               Get started free
