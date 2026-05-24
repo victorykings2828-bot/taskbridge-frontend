@@ -4,11 +4,15 @@ import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 import api from '../utils/api';
 
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
 const RegisterPage = () => {
   const { applyAuth } = useAuth();
   const navigate = useNavigate();
-  const [step, setStep] = useState(1); // 1=company, 2=admin account
+  const [step, setStep] = useState(1); // 1=company, 2=admin account, 3=verify email
   const [submitting, setSubmitting] = useState(false);
+  const [resending, setResending] = useState(false);
+  const [otp, setOtp] = useState('');
   const [form, setForm] = useState({
     companyName: '', industry: '',
     adminName: '', adminEmail: '', adminPassword: '', confirmPassword: '',
@@ -57,12 +61,13 @@ const RegisterPage = () => {
     return Object.keys(e).length === 0;
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  // Step 2 → request the OTP, then move to the verify screen.
+  const handleRequestOtp = async (e) => {
+    e?.preventDefault();
     if (!validateStep2()) return;
     setSubmitting(true);
     try {
-      const res = await api.post('/org/register', {
+      const res = await api.post('/org/register/request-otp', {
         companyName: form.companyName.trim(),
         industry: form.industry.trim(),
         adminName: form.adminName.trim(),
@@ -70,16 +75,63 @@ const RegisterPage = () => {
         adminPassword: form.adminPassword,
       });
       if (res.data.success) {
-        applyAuth(res.data);
-        toast.success(`Welcome to TaskBridge, ${form.adminName.split(' ')[0]}!`);
-        navigate('/dashboard');
+        toast.success(res.data.message || 'Verification code sent!');
+        setOtp('');
+        setStep(3);
       }
     } catch (err) {
-      const msg = err.response?.data?.message || 'Registration failed. Please try again.';
+      const msg = err.response?.data?.message || 'Could not send verification code. Please try again.';
       toast.error(msg);
-      if (msg.toLowerCase().includes('email')) setErrors({ adminEmail: msg });
+      if (msg.toLowerCase().includes('email') || msg.toLowerCase().includes('exists')) {
+        setErrors({ adminEmail: msg });
+        setStep(2);
+      }
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  // Step 3 → verify the OTP and create the workspace.
+  const handleVerify = async (e) => {
+    e.preventDefault();
+    if (otp.trim().length !== 6) { toast.error('Enter the 6-digit code'); return; }
+    setSubmitting(true);
+    try {
+      const res = await api.post('/org/register/verify', {
+        adminEmail: form.adminEmail.trim().toLowerCase(),
+        otp: otp.trim(),
+      });
+      if (res.data.success) {
+        applyAuth(res.data);
+        toast.success(res.data.message || `Welcome to TaskBridge, ${form.adminName.split(' ')[0]}!`);
+        navigate('/dashboard', { replace: true });
+      }
+    } catch (err) {
+      const msg = err.response?.data?.message || 'Verification failed. Please try again.';
+      toast.error(msg);
+      if (msg.toLowerCase().includes('start again') || msg.toLowerCase().includes('expired')) {
+        setStep(2);
+      }
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleResend = async () => {
+    setResending(true);
+    try {
+      await api.post('/org/register/request-otp', {
+        companyName: form.companyName.trim(),
+        industry: form.industry.trim(),
+        adminName: form.adminName.trim(),
+        adminEmail: form.adminEmail.trim().toLowerCase(),
+        adminPassword: form.adminPassword,
+      });
+      toast.success('A new code is on its way.');
+    } catch {
+      toast.error('Could not resend the code.');
+    } finally {
+      setResending(false);
     }
   };
 
@@ -94,6 +146,8 @@ const RegisterPage = () => {
     </div>
   );
 
+  const STEP_LABELS = ['Company', 'Your account', 'Verify'];
+
   return (
     <div className="min-h-screen bg-bg flex items-center justify-center p-4">
       <div className="w-full max-w-md">
@@ -101,26 +155,45 @@ const RegisterPage = () => {
 
         {/* Progress */}
         <div className="flex items-center gap-2 mb-6">
-          {[1, 2].map(n => (
+          {[1, 2, 3].map(n => (
             <React.Fragment key={n}>
-              <div className={`flex items-center gap-2 ${n === step ? 'opacity-100' : n < step ? 'opacity-100' : 'opacity-40'}`}>
+              <div className={`flex items-center gap-2 ${n <= step ? 'opacity-100' : 'opacity-40'}`}>
                 <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all ${n < step ? 'bg-success text-white' : n === step ? 'bg-brand text-white' : 'bg-navy-200 text-navy-500'}`}>
                   {n < step ? '✓' : n}
                 </div>
-                <span className={`text-xs font-medium ${n === step ? 'text-navy' : 'text-navy-400'}`}>
-                  {n === 1 ? 'Company' : 'Your account'}
+                <span className={`text-xs font-medium ${n === step ? 'text-navy' : 'text-navy-400'} hidden sm:inline`}>
+                  {STEP_LABELS[n - 1]}
                 </span>
               </div>
-              {n < 2 && <div className={`flex-1 h-px ${step > 1 ? 'bg-success' : 'bg-navy-200'}`} />}
+              {n < 3 && <div className={`flex-1 h-px ${step > n ? 'bg-success' : 'bg-navy-200'}`} />}
             </React.Fragment>
           ))}
         </div>
 
         <div className="bg-surface border border-navy-200 rounded-2xl p-7 shadow-card-md">
-          {step === 1 ? (
+          {step === 1 && (
             <>
               <h1 className="text-xl font-bold text-navy mb-1">Set up your workspace</h1>
-              <p className="text-navy-500 text-sm mb-6">Tell us about your company</p>
+              <p className="text-navy-500 text-sm mb-5">Start with Google or tell us about your company</p>
+
+              {/* Google signup */}
+              <button type="button" onClick={() => { window.location.href = `${API_BASE}/auth/google`; }}
+                className="w-full flex items-center justify-center gap-3 border border-navy-200 rounded-xl py-3 px-4 text-sm font-medium text-navy-700 hover:bg-surface-2 hover:border-navy-300 transition-all mb-5">
+                <svg width="18" height="18" viewBox="0 0 48 48" fill="none">
+                  <path d="M47.532 24.552c0-1.636-.147-3.2-.418-4.698H24.48v8.879h12.984c-.56 3.016-2.26 5.571-4.813 7.284v6.054h7.79c4.558-4.2 7.09-10.388 7.09-17.52z" fill="#4285F4"/>
+                  <path d="M24.48 48c6.516 0 11.982-2.16 15.976-5.85l-7.79-6.054c-2.16 1.449-4.92 2.304-8.186 2.304-6.3 0-11.638-4.254-13.548-9.976H2.932v6.248C6.908 42.672 15.088 48 24.48 48z" fill="#34A853"/>
+                  <path d="M10.932 28.424A14.4 14.4 0 0 1 10.2 24c0-1.54.262-3.036.732-4.424v-6.248H2.932A23.94 23.94 0 0 0 .48 24c0 3.864.924 7.524 2.452 10.672l8-6.248z" fill="#FBBC05"/>
+                  <path d="M24.48 9.6c3.552 0 6.738 1.22 9.246 3.624l6.934-6.934C36.454 2.376 30.996 0 24.48 0 15.088 0 6.908 5.328 2.932 13.328l8 6.248C12.842 13.854 18.18 9.6 24.48 9.6z" fill="#EA4335"/>
+                </svg>
+                Sign up with Google
+              </button>
+
+              <div className="flex items-center gap-3 mb-5">
+                <div className="flex-1 h-px bg-navy-200" />
+                <span className="text-xs text-navy-400 font-medium">or with email</span>
+                <div className="flex-1 h-px bg-navy-200" />
+              </div>
+
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-navy-700 mb-1.5">Company name <span className="text-danger">*</span></label>
@@ -153,7 +226,9 @@ const RegisterPage = () => {
                 </button>
               </div>
             </>
-          ) : (
+          )}
+
+          {step === 2 && (
             <>
               <div className="flex items-center gap-3 mb-5">
                 <button onClick={() => setStep(1)} className="text-navy-500 hover:text-navy transition-colors">
@@ -165,7 +240,7 @@ const RegisterPage = () => {
                 </div>
               </div>
 
-              <form onSubmit={handleSubmit} noValidate className="space-y-4">
+              <form onSubmit={handleRequestOtp} noValidate className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-navy-700 mb-1.5">Full name <span className="text-danger">*</span></label>
                   <input type="text" autoComplete="name" value={form.adminName} onChange={e => { setForm({ ...form, adminName: e.target.value }); setErrors({ ...errors, adminName: '' }); }} placeholder="Jane Smith"
@@ -177,7 +252,9 @@ const RegisterPage = () => {
                   <label className="block text-sm font-medium text-navy-700 mb-1.5">Work email <span className="text-danger">*</span></label>
                   <input type="email" autoComplete="email" value={form.adminEmail} onChange={e => { setForm({ ...form, adminEmail: e.target.value }); setErrors({ ...errors, adminEmail: '' }); }} placeholder="jane@yourcompany.com"
                     className={`w-full px-4 py-3 rounded-xl border text-sm outline-none transition-all focus:ring-2 focus:ring-brand/20 focus:border-brand ${errors.adminEmail ? 'border-danger bg-danger/5' : 'border-navy-200 bg-bg focus:bg-white'}`} />
-                  {errors.adminEmail && <p className="text-danger text-xs mt-1.5 flex items-center gap-1"><span>⚠</span>{errors.adminEmail}</p>}
+                  {errors.adminEmail
+                    ? <p className="text-danger text-xs mt-1.5 flex items-center gap-1"><span>⚠</span>{errors.adminEmail}</p>
+                    : <p className="text-navy-400 text-xs mt-1.5">We'll email a 6-digit code to confirm this address.</p>}
                 </div>
 
                 <div>
@@ -207,9 +284,46 @@ const RegisterPage = () => {
 
                 <button type="submit" disabled={submitting}
                   className="w-full bg-brand hover:bg-brand-dark text-white font-semibold py-3 rounded-xl transition-all disabled:opacity-60 flex items-center justify-center gap-2 mt-2">
-                  {submitting ? <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />Creating workspace...</> : 'Create my workspace'}
+                  {submitting ? <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />Sending code...</> : 'Continue'}
                 </button>
               </form>
+            </>
+          )}
+
+          {step === 3 && (
+            <>
+              <div className="flex items-center gap-3 mb-5">
+                <button onClick={() => setStep(2)} className="text-navy-500 hover:text-navy transition-colors">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                </button>
+                <div>
+                  <h1 className="text-xl font-bold text-navy">Confirm your email</h1>
+                  <p className="text-navy-500 text-sm">Code sent to <span className="font-medium text-navy">{form.adminEmail}</span></p>
+                </div>
+              </div>
+
+              <form onSubmit={handleVerify} className="space-y-4">
+                <input
+                  type="text" inputMode="numeric" autoComplete="one-time-code" maxLength={6}
+                  value={otp}
+                  onChange={e => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                  placeholder="••••••"
+                  className="w-full px-4 py-4 rounded-xl border border-navy-200 bg-bg text-center text-2xl font-bold tracking-[0.5em] outline-none transition-all focus:ring-2 focus:ring-brand/20 focus:border-brand text-navy"
+                  autoFocus
+                />
+                <button type="submit" disabled={submitting || otp.length !== 6}
+                  className="w-full bg-brand hover:bg-brand-dark text-white font-semibold py-3 rounded-xl transition-all disabled:opacity-50 flex items-center justify-center gap-2">
+                  {submitting ? <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />Verifying...</> : 'Verify & create workspace'}
+                </button>
+              </form>
+
+              <div className="text-center mt-4 text-sm text-navy-500">
+                Didn't get it?{' '}
+                <button onClick={handleResend} disabled={resending} className="text-brand font-medium hover:text-brand-dark disabled:opacity-60">
+                  {resending ? 'Resending...' : 'Resend code'}
+                </button>
+              </div>
+              <p className="text-center text-navy-400 text-xs mt-2">Check your spam folder if you don't see it within a minute.</p>
             </>
           )}
         </div>
