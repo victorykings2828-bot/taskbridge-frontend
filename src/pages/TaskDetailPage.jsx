@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../utils/api';
 import { PriorityBadge, StatusBadge } from '../components/common/Badge';
+import { CheckCircleIcon, FlagIcon, UploadIcon, ClockIcon, AlertIcon, PlayIcon, EditIcon, TrashIcon, CalendarIcon, XIcon, PaperclipIcon, FileIcon } from '../components/common/icons';
 import { formatDateTime, formatDate, timeAgo, getInitials, generateAvatarColor } from '../utils/helpers';
 import toast from 'react-hot-toast';
 
@@ -98,7 +99,7 @@ const TaskDetailPage = () => {
     setActionLoading(true);
     try {
       await api.put(`/tasks/${id}/review`, { action, revisionNote });
-      toast.success(action === 'approve' ? '✅ Task approved!' : 'Revision requested — employee notified.');
+      toast.success(action === 'approve' ? 'Task approved!' : 'Revision requested — employee notified.');
       setShowRevisionInput(false);
       setRevisionNote('');
       fetchTask();
@@ -198,8 +199,8 @@ const TaskDetailPage = () => {
               <PriorityBadge priority={task.priority} />
               <StatusBadge status={task.status} />
               {task.isFlagged && (
-                <span className="text-xs bg-orange-50 text-orange-600 border border-orange-200 px-2.5 py-1 rounded-full font-medium">
-                  🚩 Flagged
+                <span className="inline-flex items-center gap-1 text-xs bg-orange-50 text-orange-600 border border-orange-200 px-2.5 py-1 rounded-full font-medium">
+                  <FlagIcon size={11} /> Flagged
                 </span>
               )}
             </div>
@@ -249,13 +250,13 @@ const TaskDetailPage = () => {
 
         {task.revisionNote && (
           <div className="mt-4 p-3 bg-amber-50 border border-amber-100 rounded-xl">
-            <p className="text-xs font-semibold text-amber-700 mb-1">✏️ Revision Note from Manager</p>
+            <p className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-700 mb-1"><EditIcon size={12} /> Revision Note from Manager</p>
             <p className="text-sm text-amber-800">{task.revisionNote}</p>
           </div>
         )}
         {task.flagReason && (
           <div className="mt-4 p-3 bg-orange-50 border border-orange-100 rounded-xl">
-            <p className="text-xs font-semibold text-orange-700 mb-1">🚩 Flag Reason</p>
+            <p className="inline-flex items-center gap-1.5 text-xs font-semibold text-orange-700 mb-1"><FlagIcon size={12} /> Flag Reason</p>
             <p className="text-sm text-orange-800">{task.flagReason}</p>
           </div>
         )}
@@ -270,12 +271,12 @@ const TaskDetailPage = () => {
             <div className="space-y-3">
               <div className="flex flex-wrap gap-3">
                 <button onClick={() => handleAcceptOrFlag('accept')} disabled={actionLoading}
-                  className="px-5 py-2.5 bg-primary text-white text-sm font-semibold rounded-xl hover:bg-primary-light transition-all disabled:opacity-60">
-                  ✅ Accept Task
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-white text-sm font-semibold rounded-xl hover:bg-primary-light transition-all disabled:opacity-60">
+                  <CheckCircleIcon size={16} /> Accept Task
                 </button>
                 <button onClick={() => setShowFlagInput(!showFlagInput)} disabled={actionLoading}
-                  className="px-5 py-2.5 bg-orange-50 text-orange-600 border border-orange-200 text-sm font-semibold rounded-xl hover:bg-orange-100 transition-all">
-                  🚩 Flag an Issue
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-orange-50 text-orange-600 border border-orange-200 text-sm font-semibold rounded-xl hover:bg-orange-100 transition-all">
+                  <FlagIcon size={16} /> Flag an Issue
                 </button>
               </div>
               {showFlagInput && (
@@ -300,12 +301,12 @@ const TaskDetailPage = () => {
             <div className="space-y-3">
               <div className="flex flex-wrap gap-3">
                 <button onClick={() => handleStatusUpdate('under_review')} disabled={actionLoading}
-                  className="px-5 py-2.5 bg-amber-500 text-white text-sm font-semibold rounded-xl hover:bg-amber-600 transition-all disabled:opacity-60">
-                  📤 Submit for Review
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-500 text-white text-sm font-semibold rounded-xl hover:bg-amber-600 transition-all disabled:opacity-60">
+                  <UploadIcon size={16} /> Submit for Review
                 </button>
                 <button onClick={() => setShowExtensionInput(!showExtensionInput)}
-                  className="px-5 py-2.5 bg-surface-2 text-navy-600 border border-navy-200 text-sm font-semibold rounded-xl hover:bg-navy-100 transition-all">
-                  📅 Request Extension
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-surface-2 text-navy-600 border border-navy-200 text-sm font-semibold rounded-xl hover:bg-navy-100 transition-all">
+                  <CalendarIcon size={16} /> Request Extension
                 </button>
               </div>
               {showExtensionInput && (
@@ -324,27 +325,27 @@ const TaskDetailPage = () => {
                 </div>
               )}
               {task.extensionStatus === 'pending' && (
-                <p className="text-xs text-amber-600 font-medium">⏳ Extension request pending manager approval...</p>
+                <p className="inline-flex items-center gap-1.5 text-xs text-amber-600 font-medium"><ClockIcon size={13} /> Extension request pending manager approval...</p>
               )}
             </div>
           )}
 
           {task.status === 'overdue' && (
             <div className="space-y-3">
-              <p className="text-sm text-red-600 font-medium">⚠️ This task is overdue. You can still work on it.</p>
+              <p className="inline-flex items-center gap-1.5 text-sm text-red-600 font-medium"><AlertIcon size={15} /> This task is overdue. You can still work on it.</p>
               <button onClick={() => handleStatusUpdate('in_progress')} disabled={actionLoading}
-                className="px-5 py-2.5 bg-primary text-white text-sm font-semibold rounded-xl hover:bg-primary-light transition-all disabled:opacity-60">
-                ▶ Continue Working
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-white text-sm font-semibold rounded-xl hover:bg-primary-light transition-all disabled:opacity-60">
+                <PlayIcon size={15} /> Continue Working
               </button>
             </div>
           )}
 
           {task.status === 'under_review' && (
-            <p className="text-sm text-amber-600 font-medium">⏳ Waiting for manager review...</p>
+            <p className="inline-flex items-center gap-1.5 text-sm text-amber-600 font-medium"><ClockIcon size={15} /> Waiting for manager review...</p>
           )}
 
           {task.status === 'completed' && (
-            <p className="text-sm text-green-600 font-medium">✅ This task has been completed and approved!</p>
+            <p className="inline-flex items-center gap-1.5 text-sm text-green-600 font-medium"><CheckCircleIcon size={15} /> This task has been completed and approved!</p>
           )}
         </div>
       )}
@@ -356,12 +357,12 @@ const TaskDetailPage = () => {
           <div className="flex flex-wrap gap-3">
             <button
               onClick={() => navigate(`/tasks/${id}/edit`)}
-              className="px-5 py-2.5 bg-blue-50 text-blue-600 border border-blue-200 text-sm font-semibold rounded-xl hover:bg-blue-100 transition-all">
-              ✏️ Edit Task
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-50 text-blue-600 border border-blue-200 text-sm font-semibold rounded-xl hover:bg-blue-100 transition-all">
+              <EditIcon size={16} /> Edit Task
             </button>
             <button onClick={handleCancelTask} disabled={actionLoading}
-              className="px-5 py-2.5 bg-red-50 text-red-600 border border-red-200 text-sm font-semibold rounded-xl hover:bg-red-100 transition-all disabled:opacity-60">
-              🗑 Cancel Task
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-red-50 text-red-600 border border-red-200 text-sm font-semibold rounded-xl hover:bg-red-100 transition-all disabled:opacity-60">
+              <TrashIcon size={16} /> Cancel Task
             </button>
           </div>
           <p className="text-xs text-navy-400 mt-3">Tasks can only be edited or cancelled before the employee accepts them.</p>
@@ -371,19 +372,19 @@ const TaskDetailPage = () => {
       {/* Manager - Extension request pending */}
       {isAssigner && task.extensionStatus === 'pending' && (
         <div className="bg-blue-50 border border-blue-200 rounded-2xl p-5 mb-5">
-          <p className="text-sm font-semibold text-blue-800 mb-1">📅 Deadline Extension Requested</p>
+          <p className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-800 mb-1"><CalendarIcon size={15} /> Deadline Extension Requested</p>
           <p className="text-sm text-blue-700 mb-1">
             Employee requested extension to: <strong>{new Date(task.extensionDate).toDateString()}</strong>
           </p>
           <p className="text-sm text-blue-600 mb-3">Reason: {task.extensionReason}</p>
           <div className="flex gap-3">
             <button onClick={() => handleExtensionReview('approve')} disabled={actionLoading}
-              className="px-4 py-2 bg-green-600 text-white text-sm font-semibold rounded-xl hover:bg-green-700 disabled:opacity-60 transition-all">
-              ✅ Approve Extension
+              className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white text-sm font-semibold rounded-xl hover:bg-green-700 disabled:opacity-60 transition-all">
+              <CheckCircleIcon size={16} /> Approve Extension
             </button>
             <button onClick={() => handleExtensionReview('reject')} disabled={actionLoading}
-              className="px-4 py-2 bg-red-50 text-red-600 border border-red-200 text-sm font-semibold rounded-xl hover:bg-red-100 disabled:opacity-60 transition-all">
-              ❌ Reject
+              className="inline-flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 border border-red-200 text-sm font-semibold rounded-xl hover:bg-red-100 disabled:opacity-60 transition-all">
+              <XIcon size={16} /> Reject
             </button>
           </div>
         </div>
@@ -396,12 +397,12 @@ const TaskDetailPage = () => {
           <p className="text-sm text-navy-500 mb-4">Employee has submitted this task. Please review and decide.</p>
           <div className="flex flex-wrap gap-3 mb-3">
             <button onClick={() => handleReview('approve')} disabled={actionLoading}
-              className="px-5 py-2.5 bg-green-600 text-white text-sm font-semibold rounded-xl hover:bg-green-700 transition-all disabled:opacity-60">
-              ✅ Approve Task
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-green-600 text-white text-sm font-semibold rounded-xl hover:bg-green-700 transition-all disabled:opacity-60">
+              <CheckCircleIcon size={16} /> Approve Task
             </button>
             <button onClick={() => setShowRevisionInput(!showRevisionInput)} disabled={actionLoading}
-              className="px-5 py-2.5 bg-amber-50 text-amber-700 border border-amber-200 text-sm font-semibold rounded-xl hover:bg-amber-100 transition-all">
-              ✏️ Request Revision
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-50 text-amber-700 border border-amber-200 text-sm font-semibold rounded-xl hover:bg-amber-100 transition-all">
+              <EditIcon size={16} /> Request Revision
             </button>
           </div>
           {showRevisionInput && (
@@ -422,7 +423,7 @@ const TaskDetailPage = () => {
       {/* Manager - task is flagged notice */}
       {isAssigner && task.isFlagged && task.status === 'not_started' && (
         <div className="bg-orange-50 border border-orange-200 rounded-2xl p-5 mb-5">
-          <p className="text-sm font-semibold text-orange-800 mb-1">🚩 Employee flagged this task</p>
+          <p className="inline-flex items-center gap-1.5 text-sm font-semibold text-orange-800 mb-1"><FlagIcon size={14} /> Employee flagged this task</p>
           <p className="text-sm text-orange-700">{task.flagReason}</p>
           <p className="text-xs text-orange-500 mt-2">Respond via comments below or edit/cancel the task.</p>
         </div>
@@ -441,7 +442,7 @@ const TaskDetailPage = () => {
                 <div className="space-y-2 mb-3">
                   {task.files.map((f, i) => (
                     <div key={i} className="flex items-center gap-3 p-3 bg-surface-2 rounded-xl border border-navy-200">
-                      <span className="text-lg">📎</span>
+                      <span className="w-8 h-8 rounded-lg bg-brand/10 text-brand flex items-center justify-center flex-shrink-0"><PaperclipIcon size={16} /></span>
                       <span className="text-sm text-navy flex-1 truncate">{f.name}</span>
                       {isStored(f.url) ? (
                         <a href={toDownloadUrl(f.url)} target="_blank" rel="noreferrer" download={f.name}
@@ -457,7 +458,7 @@ const TaskDetailPage = () => {
               )}
               {isAssigner && (
                 <label className="inline-flex items-center gap-2 px-4 py-2 bg-surface-2 border border-navy-200 text-sm font-medium text-navy-600 rounded-xl hover:bg-navy-100 cursor-pointer transition-all">
-                  <span>📎</span> Attach File
+                  <PaperclipIcon size={16} /> Attach File
                   <input type="file" className="hidden" onChange={async (e) => {
                     const file = e.target.files[0];
                     if (!file) return;
@@ -483,7 +484,7 @@ const TaskDetailPage = () => {
                 <div className="space-y-2 mb-3">
                   {task.deliverables.map((f, i) => (
                     <div key={i} className="flex items-center gap-3 p-3 bg-green-50 rounded-xl border border-green-100">
-                      <span className="text-lg">📄</span>
+                      <span className="w-8 h-8 rounded-lg bg-green-500/15 text-green-600 flex items-center justify-center flex-shrink-0"><FileIcon size={16} /></span>
                       <span className="text-sm text-navy flex-1 truncate">{f.name}</span>
                       {isStored(f.url) ? (
                         <a href={toDownloadUrl(f.url)} target="_blank" rel="noreferrer" download={f.name}
@@ -499,7 +500,7 @@ const TaskDetailPage = () => {
               )}
               {isAssignee && ['in_progress', 'under_review'].includes(task.status) && (
                 <label className="inline-flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-200 text-sm font-medium text-green-700 rounded-xl hover:bg-green-100 cursor-pointer transition-all">
-                  <span>📤</span> Upload Deliverable
+                  <UploadIcon size={16} /> Upload Deliverable
                   <input type="file" className="hidden" onChange={async (e) => {
                     const file = e.target.files[0];
                     if (!file) return;
