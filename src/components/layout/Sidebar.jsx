@@ -122,7 +122,8 @@ const Sidebar = ({ unreadCount = 0 }) => {
           <span className="text-slate-500 text-xs font-medium">Appearance</span>
           <ThemeToggle variant="sidebar" />
         </div>
-        <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-800 group transition-all">
+        {/* User info */}
+        <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl">
           <div className="w-8 h-8 rounded-full bg-brand flex items-center justify-center flex-shrink-0 text-white text-xs font-bold">
             {user?.avatar ? <img src={user.avatar} alt="" className="w-full h-full rounded-full object-cover" /> : initials}
           </div>
@@ -130,11 +131,13 @@ const Sidebar = ({ unreadCount = 0 }) => {
             <p className="text-white text-xs font-medium truncate">{user?.name}</p>
             <p className="text-slate-500 text-xs truncate capitalize">{roleLabel}</p>
           </div>
-          <button onClick={handleLogout} title="Sign out"
-            className="text-slate-500 hover:text-danger transition-colors flex-shrink-0 opacity-0 group-hover:opacity-100">
-            <LogoutIcon />
-          </button>
         </div>
+        {/* Always-visible sign out button */}
+        <button onClick={handleLogout}
+          className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-red-500/10 hover:text-red-400 border border-transparent hover:border-red-500/20 transition-all text-sm font-medium">
+          <LogoutIcon />
+          <span>Sign out</span>
+        </button>
       </div>
     </div>
   );
